@@ -106,5 +106,5 @@ public class MoneyTransaction extends SugarRecord{
     public String toString() {
         return "mName: "+mName+" "+"mCategory: " +  mCategory.getName()+" " +"mWallet: "+ mWallet.getBalance()+" "+"mDescription: "+ mDescription+" "+"mAmount: "+ mAmount+" "+" mDate: "+  mDate+"\n";
     }
-
+ 
 }
