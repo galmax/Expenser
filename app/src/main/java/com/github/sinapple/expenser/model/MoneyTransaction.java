@@ -8,7 +8,7 @@ import java.util.Date;
 /*
  * Represents either expense or income
  */
-public class MoneyTransaction extends SugarRecord{
+public class MoneyTransaction extends SugarRecord {
     private String mName;
     private TransactionCategory mCategory;
     private Wallet mWallet;
@@ -68,7 +68,8 @@ public class MoneyTransaction extends SugarRecord{
     //Constructors
 
     //Default constructor is for ORM DB
-    public MoneyTransaction(){}
+    public MoneyTransaction() {
+    }
 
     public MoneyTransaction(String name, TransactionCategory category, Wallet wallet, String description, float amount, Date date) {
         mName = name;
@@ -100,11 +101,12 @@ public class MoneyTransaction extends SugarRecord{
      * Returns type of transaction
      * If amount of transaction is negative then it's expense, otherwise -- income
      */
-    public boolean isExpense() {return mAmount < 0;}
+    public boolean isExpense() {
+        return mAmount < 0;
+    }
 
     @Override
     public String toString() {
-        return "mName: "+mName+" "+"mCategory: " +  mCategory.getName()+" " +"mWallet: "+ mWallet.getBalance()+" "+"mDescription: "+ mDescription+" "+"mAmount: "+ mAmount+" "+" mDate: "+  mDate+"\n";
+        return "mName: " + mName + " " + "mCategory: " + mCategory.getName() + " " + "mWallet: " + mWallet.getBalance() + " " + "mDescription: " + mDescription + " " + "mAmount: " + mAmount + " " + " mDate: " + mDate + "\n";
     }
- 
 }

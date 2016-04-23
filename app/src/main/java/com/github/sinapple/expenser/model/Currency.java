@@ -5,7 +5,7 @@ import com.orm.SugarRecord;
 /**
  * Represents currency that's used in transactions, default currency is Euro
  */
-public class Currency extends SugarRecord{
+public class Currency extends SugarRecord {
     private String mFullName;
     private String mShortName;
     private Character mSign;
@@ -52,8 +52,9 @@ public class Currency extends SugarRecord{
         mShortName = shortName;
         mSign = sign;
     }
+
     @Override
     public String toString() {
-        return "mFullName: "+mFullName+" "+"mShortName: " +  mShortName+" " +"mSign: "+ mSign+"\n";
+        return "mFullName: " + mFullName + " " + "mShortName: " + mShortName + " " + "mSign: " + mSign + "\n";
     }
 }

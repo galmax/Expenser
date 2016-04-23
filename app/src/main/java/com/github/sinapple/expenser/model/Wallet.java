@@ -6,7 +6,7 @@ import com.orm.SugarRecord;
  * Represents specific wallet with its own money balance, currency.
  * Every transaction has to be related with some wallet.
  */
-public class Wallet extends SugarRecord{
+public class Wallet extends SugarRecord {
     private String mName;
     private String mDescription;
     private float mBalance;
@@ -61,8 +61,9 @@ public class Wallet extends SugarRecord{
         mBalance = balance;
         mCurrency = currency;
     }
+
     @Override
     public String toString() {
-        return "mName: "+mName+" "+"mDescription: " +  mDescription+" " +"mBalance: "+ mBalance+" "+"mCurrency: "+ mCurrency.getShortName()+"\n";
+        return "mName: " + mName + " " + "mDescription: " + mDescription + " " + "mBalance: " + mBalance + " " + "mCurrency: " + mCurrency.getShortName() + "\n";
     }
 }

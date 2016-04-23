@@ -5,7 +5,7 @@ import com.orm.SugarRecord;
 /**
  * Class represents category of either expense or income
  */
-public class TransactionCategory extends SugarRecord{
+public class TransactionCategory extends SugarRecord {
     private String mName;
     private String mDescription;
     private boolean mExpenseCategory;
@@ -43,8 +43,9 @@ public class TransactionCategory extends SugarRecord{
         mDescription = description;
         mExpenseCategory = expenseCategory;
     }
+
     @Override
     public String toString() {
-        return "mName: "+mName+" "+"mDescription: " +  mDescription+" " +"mExpenseCategory: "+ mExpenseCategory+"\n";
+        return "mName: " + mName + " " + "mDescription: " + mDescription + " " + "mExpenseCategory: " + mExpenseCategory + "\n";
     }
 }
