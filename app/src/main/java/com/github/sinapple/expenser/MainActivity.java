@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-
+/*
         //create Currency
         Currency mainCurrency = new Currency("Euro", "EUR", '\u20ac');
         mainCurrency.save();
@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity
         moneyTransaction2.save();
         MoneyTransaction moneyTransaction3 = new MoneyTransaction("My salary", transactionCategorySalary, mainWallet, "I get salary", 270);
         moneyTransaction3.save();
-
+*/
 
         //writeList
         List<Wallet> walletList = Wallet.listAll(Wallet.class);
