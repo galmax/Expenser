@@ -1,12 +1,17 @@
 package com.github.sinapple.expenser.model;
 
+import com.orm.SugarRecord;
+
 /**
  * Class represents category of either expense or income
  */
-public class TransactionCategory {
+public class TransactionCategory extends SugarRecord{
     private String mName;
     private String mDescription;
     private boolean mExpenseCategory;
+
+    public TransactionCategory() {
+    }
 
     //Getters and Setters
     public String getDescription() {
@@ -37,5 +42,9 @@ public class TransactionCategory {
         mName = name;
         mDescription = description;
         mExpenseCategory = expenseCategory;
+    }
+    @Override
+    public String toString() {
+        return "mName: "+mName+" "+"mDescription: " +  mDescription+" " +"mExpenseCategory: "+ mExpenseCategory+"\n";
     }
 }

@@ -1,14 +1,19 @@
 package com.github.sinapple.expenser.model;
 
+import com.orm.SugarRecord;
+
 /**
  * Represents specific wallet with its own money balance, currency.
  * Every transaction has to be related with some wallet.
  */
-public class Wallet {
+public class Wallet extends SugarRecord{
     private String mName;
     private String mDescription;
     private float mBalance;
     private Currency mCurrency;
+
+    public Wallet() {
+    }
 
     //Getters and Setters
     public String getName() {
@@ -55,5 +60,9 @@ public class Wallet {
         mName = name;
         mBalance = balance;
         mCurrency = currency;
+    }
+    @Override
+    public String toString() {
+        return "mName: "+mName+" "+"mDescription: " +  mDescription+" " +"mBalance: "+ mBalance+" "+"mCurrency: "+ mCurrency.getShortName()+"\n";
     }
 }

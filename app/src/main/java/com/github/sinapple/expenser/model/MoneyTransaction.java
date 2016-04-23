@@ -1,11 +1,14 @@
 package com.github.sinapple.expenser.model;
 
+import com.orm.SugarRecord;
+
 import java.util.Date;
+
 
 /*
  * Represents either expense or income
  */
-public class Transaction {
+public class MoneyTransaction extends SugarRecord{
     private String mName;
     private TransactionCategory mCategory;
     private Wallet mWallet;
@@ -65,9 +68,9 @@ public class Transaction {
     //Constructors
 
     //Default constructor is for ORM DB
-    public Transaction(){}
+    public MoneyTransaction(){}
 
-    public Transaction(String name, TransactionCategory category, Wallet wallet, String description, float amount, Date date) {
+    public MoneyTransaction(String name, TransactionCategory category, Wallet wallet, String description, float amount, Date date) {
         mName = name;
         mCategory = category;
         mWallet = wallet;
@@ -76,7 +79,7 @@ public class Transaction {
         mDate = date;
     }
 
-    public Transaction(String name, TransactionCategory category, Wallet wallet, String description, float amount) {
+    public MoneyTransaction(String name, TransactionCategory category, Wallet wallet, String description, float amount) {
         mName = name;
         mCategory = category;
         mWallet = wallet;
@@ -85,7 +88,7 @@ public class Transaction {
         mDate = new Date();
     }
 
-    public Transaction(String name, TransactionCategory category, Wallet wallet, float amount) {
+    public MoneyTransaction(String name, TransactionCategory category, Wallet wallet, float amount) {
         mName = name;
         mCategory = category;
         mWallet = wallet;
@@ -99,6 +102,9 @@ public class Transaction {
      */
     public boolean isExpense() {return mAmount < 0;}
 
-
+    @Override
+    public String toString() {
+        return "mName: "+mName+" "+"mCategory: " +  mCategory.getName()+" " +"mWallet: "+ mWallet.getBalance()+" "+"mDescription: "+ mDescription+" "+"mAmount: "+ mAmount+" "+" mDate: "+  mDate+"\n";
+    }
 
 }

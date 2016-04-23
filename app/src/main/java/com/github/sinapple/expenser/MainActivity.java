@@ -12,6 +12,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
+
+import com.github.sinapple.expenser.model.Currency;
+import com.github.sinapple.expenser.model.MoneyTransaction;
+import com.github.sinapple.expenser.model.TransactionCategory;
+import com.github.sinapple.expenser.model.Wallet;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -40,6 +48,60 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+
+        //create Currency
+        Currency mainCurrency = new Currency("Euro", "EUR", '\u20ac');
+        mainCurrency.save();
+        //create Wallet
+        Wallet mainWallet = new Wallet("My Wallet","Sanya`s wallet",0, mainCurrency);
+        mainWallet.save();
+        //create TransactionCategory
+        TransactionCategory transactionCategoryFood = new TransactionCategory("Food", "This category about food", false);
+        transactionCategoryFood.save();
+        //create TransactionCategory
+        TransactionCategory transactionCategoryTransport = new TransactionCategory("Transport", "This category about transport", false);
+        transactionCategoryTransport.save();
+        //create TransactionCategory
+        TransactionCategory transactionCategorySalary = new TransactionCategory("Salary", "This category about salary", true);
+        transactionCategorySalary.save();
+        //create TransactionCategory
+        TransactionCategory transactionCategoryPremium = new TransactionCategory("Premium", "This category about premium", true);
+        transactionCategoryPremium.save();
+        //create TransactionCategory
+        TransactionCategory transactionCategoryGym = new TransactionCategory("Gym", "This category about premium", false);
+        transactionCategoryGym.save();
+
+        //create Transactions
+        MoneyTransaction moneyTransaction1 = new MoneyTransaction("Bought bread", transactionCategoryFood, mainWallet, "I bought some bread", 5);
+        moneyTransaction1.save();
+        MoneyTransaction moneyTransaction2 = new MoneyTransaction("Bought subscription", transactionCategoryGym, mainWallet, "I bought subscription on month", 50);
+        moneyTransaction2.save();
+        MoneyTransaction moneyTransaction3 = new MoneyTransaction("My salary", transactionCategorySalary, mainWallet, "I get salary", 270);
+        moneyTransaction3.save();
+
+
+        //writeList
+        List<Wallet> walletList = Wallet.listAll(Wallet.class);
+        List<MoneyTransaction> moneyTransactions = MoneyTransaction.listAll(MoneyTransaction.class);
+        List<TransactionCategory> transactionCategory = TransactionCategory.listAll(TransactionCategory.class);
+        List<Currency> currency = Currency.listAll(Currency.class);
+
+/*       //delete with db
+        Wallet.deleteAll(Wallet.class);
+        Currency.deleteAll(Currency.class);
+        MoneyTransaction.deleteAll(MoneyTransaction.class);
+        TransactionCategory.deleteAll(TransactionCategory.class);
+*/
+
+
+        TextView textView = (TextView) findViewById(R.id.textView);
+
+      //  textView.setText(walletList.toString());
+       textView.setText(moneyTransactions.toString());
+       // textView.setText(transactionCategory.toString());
+       // textView.setText(currency.toString());
+
     }
 
     @Override
