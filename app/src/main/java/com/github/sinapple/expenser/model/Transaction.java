@@ -2,16 +2,15 @@ package com.github.sinapple.expenser.model;
 
 import java.util.Date;
 
-/**
+/*
  * Represents either expense or income
  */
 public class Transaction {
     private String mName;
-    private boolean mExpense;
     private TransactionCategory mCategory;
+    private Wallet mWallet;
     private String mDescription;
     private float mAmount;
-    private Currency mCurrency;
     private Date mDate;
 
     //Getters and setters
@@ -23,8 +22,6 @@ public class Transaction {
         this.mName = mName;
     }
 
-    public boolean isExpense() {return mExpense;}
-
     public TransactionCategory getCategory() {
         return mCategory;
     }
@@ -33,20 +30,20 @@ public class Transaction {
         this.mCategory = mCategory;
     }
 
+    public Wallet getWallet() {
+        return mWallet;
+    }
+
+    public void setWallet(Wallet wallet) {
+        mWallet = wallet;
+    }
+
     public float getAmount() {
-        return mAmount;
+        return Math.abs(mAmount);
     }
 
     public void setAmount(float mAmount) {
         this.mAmount = mAmount;
-    }
-
-    public Currency getCurrency() {
-        return mCurrency;
-    }
-
-    public void setCurrency(Currency currency) {
-        mCurrency = currency;
     }
 
     public String getDescription() {
@@ -70,21 +67,38 @@ public class Transaction {
     //Default constructor is for ORM DB
     public Transaction(){}
 
-    public Transaction(String name, boolean isExpense, TransactionCategory category, String description, float amount, Currency currency, Date date){
-        this.mName = name;
-        this.mExpense = isExpense;
-        this.mCategory = category;
-        this.mDescription = description;
-        this.mAmount = amount;
-        this.mCurrency = currency;
-        this.mDate = date;
+    public Transaction(String name, TransactionCategory category, Wallet wallet, String description, float amount, Date date) {
+        mName = name;
+        mCategory = category;
+        mWallet = wallet;
+        mDescription = description;
+        mAmount = amount;
+        mDate = date;
     }
 
-    public Transaction(String name, boolean isExpense, float amount, Currency currency, Date date){
-        this.mName = name;
-        this.mExpense = isExpense;
-        this.mAmount = amount;
-        this.mCurrency = currency;
-        this.mDate = date;
+    public Transaction(String name, TransactionCategory category, Wallet wallet, String description, float amount) {
+        mName = name;
+        mCategory = category;
+        mWallet = wallet;
+        mDescription = description;
+        mAmount = amount;
+        mDate = new Date();
     }
+
+    public Transaction(String name, TransactionCategory category, Wallet wallet, float amount) {
+        mName = name;
+        mCategory = category;
+        mWallet = wallet;
+        mAmount = amount;
+        mDate = new Date();
+    }
+
+    /*
+     * Returns type of transaction
+     * If amount of transaction is negative then it's expense, otherwise -- income
+     */
+    public boolean isExpense() {return mAmount < 0;}
+
+
+
 }
