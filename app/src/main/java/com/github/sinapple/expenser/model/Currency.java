@@ -8,7 +8,7 @@ import com.orm.SugarRecord;
 public class Currency extends SugarRecord {
     private String mFullName;
     private String mShortName;
-    private Character mSign;
+    private String mSign;
 
     public Currency() {
     }
@@ -32,11 +32,11 @@ public class Currency extends SugarRecord {
         mShortName = shortName;
     }
 
-    public Character getSign() {
+    public String getSign() {
         return mSign;
     }
 
-    public void setSign(Character sign) {
+    public void setSign(String sign) {
         mSign = sign;
     }
 
@@ -47,7 +47,7 @@ public class Currency extends SugarRecord {
         mSign = null;
     }
 
-    public Currency(String fullName, String shortName, Character sign) {
+    public Currency(String fullName, String shortName, String sign) {
         mFullName = fullName;
         mShortName = shortName;
         mSign = sign;

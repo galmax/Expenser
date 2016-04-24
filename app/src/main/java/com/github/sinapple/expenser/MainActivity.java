@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity
 
 /*
         //create Currency
-        Currency mainCurrency = new Currency("Euro", "EUR", '\u20ac');
+        Currency mainCurrency = new Currency("Euro", "EUR", "\u20ac");
         mainCurrency.save();
         //create Wallet
         Wallet mainWallet = new Wallet("My Wallet","Sanya`s wallet",0, mainCurrency);
