@@ -55,6 +55,6 @@ public class Currency extends SugarRecord {
 
     @Override
     public String toString() {
-        return "mFullName: " + mFullName + " " + "mShortName: " + mShortName + " " + "mSign: " + mSign + "\n";
+        return mSign == null ? mShortName : mSign;
     }
 }

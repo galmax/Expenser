@@ -46,6 +46,6 @@ public class TransactionCategory extends SugarRecord {
 
     @Override
     public String toString() {
-        return "mName: " + mName + " " + "mDescription: " + mDescription + " " + "mExpenseCategory: " + mExpenseCategory + "\n";
+        return mName;
     }
 }

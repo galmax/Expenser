@@ -8,6 +8,8 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,6 +28,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //Initialize layout
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -45,11 +48,19 @@ public class MainActivity extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
-
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-/*
+
+
+        //Initialize RecyclerList
+        RecyclerView list = (RecyclerView)findViewById(R.id.transaction_list);
+        list.setLayoutManager(new LinearLayoutManager(this));
+        CustomRListAdapter adapter = new CustomRListAdapter(MoneyTransaction.listAll(MoneyTransaction.class));
+        list.setAdapter(adapter);
+    }
+
+    private static void initializeDB(){
         //create Currency
         Currency mainCurrency = new Currency("Euro", "EUR", "\u20ac");
         mainCurrency.save();
@@ -79,29 +90,6 @@ public class MainActivity extends AppCompatActivity
         moneyTransaction2.save();
         MoneyTransaction moneyTransaction3 = new MoneyTransaction("My salary", transactionCategorySalary, mainWallet, "I get salary", 270);
         moneyTransaction3.save();
-*/
-
-        //writeList
-        List<Wallet> walletList = Wallet.listAll(Wallet.class);
-        List<MoneyTransaction> moneyTransactions = MoneyTransaction.listAll(MoneyTransaction.class);
-        List<TransactionCategory> transactionCategory = TransactionCategory.listAll(TransactionCategory.class);
-        List<Currency> currency = Currency.listAll(Currency.class);
-
-/*       //delete with db
-        Wallet.deleteAll(Wallet.class);
-        Currency.deleteAll(Currency.class);
-        MoneyTransaction.deleteAll(MoneyTransaction.class);
-        TransactionCategory.deleteAll(TransactionCategory.class);
-*/
-
-
-        TextView textView = (TextView) findViewById(R.id.textView);
-
-        //  textView.setText(walletList.toString());
-        textView.setText(moneyTransactions.toString());
-        // textView.setText(transactionCategory.toString());
-        // textView.setText(currency.toString());
-
     }
 
     @Override
