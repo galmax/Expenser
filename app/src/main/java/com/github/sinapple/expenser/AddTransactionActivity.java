@@ -1,7 +1,8 @@
 package com.github.sinapple.expenser;
 
-import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -11,6 +12,22 @@ public class AddTransactionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_transaction);
+        Intent intentTransaction = getIntent();
+        String whatDo = intentTransaction.getStringExtra("whatDo");
+        switch (whatDo) {
+            case "addExpense":
+                setTitle("Add Expense");
+                break;
+            case "editExpense":
+                setTitle("Edit Expense");
+                break;
+            case "addIncome":
+                setTitle("Add Income");
+                break;
+            case "editIncome":
+                setTitle("Edit Income");
+                break;
+        }
     }
 
     @Override
@@ -19,6 +36,7 @@ public class AddTransactionActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_transaction, menu);
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -29,8 +47,7 @@ public class AddTransactionActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.add_transaction) {
             return true;
-        }
-        else if (id == R.id.clean_transaction) {
+        } else if (id == R.id.clean_transaction) {
             return true;
         }
 

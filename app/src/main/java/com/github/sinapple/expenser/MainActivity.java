@@ -1,5 +1,6 @@
 package com.github.sinapple.expenser;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -14,14 +15,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 
 import com.github.sinapple.expenser.model.Currency;
 import com.github.sinapple.expenser.model.MoneyTransaction;
 import com.github.sinapple.expenser.model.TransactionCategory;
 import com.github.sinapple.expenser.model.Wallet;
-
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -41,7 +39,9 @@ public class MainActivity extends AppCompatActivity
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
                 //intent to AddTransactionsActivity
-
+                Intent intentToTransaction = new Intent(MainActivity.this, AddTransactionActivity.class);
+                intentToTransaction.putExtra("whatDo","addExpense");
+                startActivity(intentToTransaction);
             }
         });
 
@@ -54,20 +54,19 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
 
-
         //Initialize RecyclerList
-        RecyclerView list = (RecyclerView)findViewById(R.id.transaction_list);
+        RecyclerView list = (RecyclerView) findViewById(R.id.transaction_list);
         list.setLayoutManager(new LinearLayoutManager(this));
         CustomRListAdapter adapter = new CustomRListAdapter(MoneyTransaction.listAll(MoneyTransaction.class));
         list.setAdapter(adapter);
     }
 
-    private static void initializeDB(){
+    private static void initializeDB() {
         //create Currency
         Currency mainCurrency = new Currency("Euro", "EUR", "\u20ac");
         mainCurrency.save();
         //create Wallet
-        Wallet mainWallet = new Wallet("My Wallet","Sanya`s wallet",0, mainCurrency);
+        Wallet mainWallet = new Wallet("My Wallet", "Sanya`s wallet", 0, mainCurrency);
         mainWallet.save();
         //create TransactionCategory
         TransactionCategory transactionCategoryFood = new TransactionCategory("Food", "This category about food", false);
