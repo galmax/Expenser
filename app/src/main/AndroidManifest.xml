@@ -32,7 +32,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AddTransactionActivity"></activity>
+        <activity android:name=".AddTransactionActivity"
+            android:parentActivityName="com.github.sinapple.expenser.MainActivity"/>
     </application>
 
 </manifest>
