@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity
                         .setAction("Action", null).show();
                 //intent to AddTransactionsActivity
                 Intent intentToTransaction = new Intent(MainActivity.this, AddTransactionActivity.class);
+                //send key to AddTransactionActivity.class
                 intentToTransaction.putExtra("whatDo","addExpense");
                 startActivity(intentToTransaction);
             }

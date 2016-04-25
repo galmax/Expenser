@@ -12,7 +12,9 @@ public class AddTransactionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_transaction);
+        //get intent
         Intent intentTransaction = getIntent();
+        //get key of MainActivity.class
         String whatDo = intentTransaction.getStringExtra("whatDo");
         switch (whatDo) {
             case "addExpense":
