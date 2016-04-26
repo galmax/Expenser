@@ -104,11 +104,11 @@ public class AddTransactionActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.add_transaction) {
 
-            //получаем объект класа wallet
+            //get object wallet
             Wallet wallet = Wallet.findById(Wallet.class, 1);
             transactionCategory = transactionCategories.get(spinner_CategoryTransaction.getSelectedItemPosition());
 
-            //получаем объект дата
+            //get date object
             SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
             try {
                 date = sdf.parse(tv_dateTransaction.getText().toString());
