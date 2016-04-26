@@ -5,13 +5,27 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
 public class AddTransactionActivity extends AppCompatActivity {
+
+    Button bt_setDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_transaction);
+
+        //button for set Date
+        bt_setDate = (Button) findViewById(R.id.bt_set_date);
+        bt_setDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatePicker datePicker = new DatePicker();
+                datePicker.show(getFragmentManager(), "date_picker");
+            }
+        });
         //get intent
         Intent intentTransaction = getIntent();
         //get key of MainActivity.class

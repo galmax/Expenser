@@ -9,4 +9,7 @@
     <dimen name="recycle_element_margin">1dp</dimen>
     <dimen name="recycle_item_activity_horizontal_margin">10dp</dimen>
     <dimen name="recycle_item_activity_vertical_margin">4dp</dimen>
+    <dimen name="text_size_activity_add_transaction">20sp</dimen>
+    <dimen name="activity_element_margin">1dp</dimen>
+    <dimen name="activity_element_marginLeft">16dp</dimen>
 </resources>
