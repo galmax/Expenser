@@ -86,7 +86,7 @@
             android:background="@android:color/transparent"
             android:ems="10"
             android:hint="Amount"
-            android:inputType="numberSigned"
+            android:inputType="numberDecimal"
             android:textSize="@dimen/text_size_activity_add_transaction" />
     </android.support.design.widget.TextInputLayout>
 
@@ -116,8 +116,9 @@
             android:textSize="@dimen/text_size_activity_add_transaction" />
 
         <TextView
-            android:id="@+id/tV_date"
+            android:id="@+id/tv_date"
             android:layout_width="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
 
