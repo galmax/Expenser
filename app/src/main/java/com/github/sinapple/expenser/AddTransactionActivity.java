@@ -11,7 +11,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.sinapple.expenser.model.MoneyTransaction;
 import com.github.sinapple.expenser.model.TransactionCategory;
@@ -32,6 +31,12 @@ public class AddTransactionActivity extends AppCompatActivity {
     Date date;
     List<TransactionCategory> transactionCategories;
     TransactionCategory transactionCategory;
+    MoneyTransaction moneyTransactionForEdit;
+    List<MoneyTransaction> moneyTransactions;
+    String whatDo;
+    SimpleDateFormat sdf;
+    //get object wallet
+    Wallet wallet = Wallet.findById(Wallet.class, 1);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,33 +63,42 @@ public class AddTransactionActivity extends AppCompatActivity {
         //get intent
         Intent intentTransaction = getIntent();
         //get key of MainActivity.class
-        String whatDo = intentTransaction.getStringExtra("whatDo");
+        whatDo = intentTransaction.getStringExtra("whatDo");
+        //get date object
+        sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+
+        moneyTransactions = MoneyTransaction.listAll(MoneyTransaction.class);
+        moneyTransactionForEdit = moneyTransactions.get(intentTransaction.getExtras().getInt("location"));
+
         switch (whatDo) {
+
             case "addExpense":
                 setTitle("Add Expense");
                 transactionCategories = TransactionCategory.find(TransactionCategory.class, "m_expense_category=?", "0");
                 isExpense = -1;
+                showSpinner(transactionCategories);
                 break;
             case "editExpense":
                 setTitle("Edit Expense");
                 transactionCategories = TransactionCategory.find(TransactionCategory.class, "m_expense_category=?", "0");
                 isExpense = -1;
+                showSpinner(transactionCategories);
+                dataFillingDb();
                 break;
             case "addIncome":
                 setTitle("Add Income");
                 transactionCategories = TransactionCategory.find(TransactionCategory.class, "m_expense_category=?", "1");
                 isExpense = 1;
+                showSpinner(transactionCategories);
                 break;
             case "editIncome":
                 setTitle("Edit Income");
                 transactionCategories = TransactionCategory.find(TransactionCategory.class, "m_expense_category=?", "1");
                 isExpense = 1;
+                showSpinner(transactionCategories);
+                dataFillingDb();
                 break;
         }
-
-// Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter categoryAdapter = new ArrayAdapter(this, R.layout.spinner, transactionCategories);
-        spinner_CategoryTransaction.setAdapter(categoryAdapter);
     }
 
     @Override
@@ -103,22 +117,11 @@ public class AddTransactionActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.add_transaction) {
-
-            //get object wallet
-            Wallet wallet = Wallet.findById(Wallet.class, 1);
-            transactionCategory = transactionCategories.get(spinner_CategoryTransaction.getSelectedItemPosition());
-
-            //get date object
-            SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
-            try {
-                date = sdf.parse(tv_dateTransaction.getText().toString());
-            } catch (ParseException e) {
-                e.printStackTrace();
+            if (whatDo.equals("addExpense") || whatDo.equals("addIncome")) {
+                saveTransaction();
+            } else if (whatDo.equals("editExpense") || whatDo.equals("editIncome")) {
+                editTransaction();
             }
-
-            MoneyTransaction moneyTransaction = new MoneyTransaction(et_nameTransaction.getText().toString(), transactionCategory, wallet, et_descriptionTransaction.getText().toString(), (Float.valueOf(et_amountTransaction.getText().toString()) * isExpense), date);
-            moneyTransaction.save();
-
             //return ti MainActivity
             Intent intentToMain = new Intent(AddTransactionActivity.this, MainActivity.class);
             startActivity(intentToMain);
@@ -128,8 +131,63 @@ public class AddTransactionActivity extends AppCompatActivity {
             et_amountTransaction.setText("");
             et_descriptionTransaction.setText("");
             tv_dateTransaction.setText("");
+            spinner_CategoryTransaction.setSelection(0);
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void dataFillingDb() {
+        et_nameTransaction.setText(moneyTransactionForEdit.getName());
+        et_amountTransaction.setText(String.valueOf(moneyTransactionForEdit.getAmount()));
+        et_descriptionTransaction.setText(moneyTransactionForEdit.getDescription());
+        tv_dateTransaction.setText(sdf.format(moneyTransactionForEdit.getDate()));
+        spinner_CategoryTransaction.setSelection(getIndex(moneyTransactionForEdit.getCategory().getName()));
+    }
+
+    private void editTransaction() {
+        try {
+            date = sdf.parse(tv_dateTransaction.getText().toString());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        transactionCategory = transactionCategories.get(spinner_CategoryTransaction.getSelectedItemPosition());
+
+        moneyTransactionForEdit.setAmount((Float.valueOf(et_amountTransaction.getText().toString()) * isExpense));
+        moneyTransactionForEdit.setName(et_nameTransaction.getText().toString());
+        moneyTransactionForEdit.setDescription(et_descriptionTransaction.getText().toString());
+        moneyTransactionForEdit.setCategory(transactionCategory);
+        moneyTransactionForEdit.setDate(date);
+        moneyTransactionForEdit.save();
+    }
+
+    private void showSpinner(List<TransactionCategory> categories) {
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter categoryAdapter = new ArrayAdapter(this, R.layout.spinner, categories);
+        spinner_CategoryTransaction.setAdapter(categoryAdapter);
+        // spinner_CategoryTransaction.setSelection(moneyTransaction.getCategory().getId().intValue());
+    }
+
+    private void saveTransaction() {
+
+        try {
+            date = sdf.parse(tv_dateTransaction.getText().toString());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        transactionCategory = transactionCategories.get(spinner_CategoryTransaction.getSelectedItemPosition());
+        MoneyTransaction moneyTransaction = new MoneyTransaction(et_nameTransaction.getText().toString(), transactionCategory, wallet, et_descriptionTransaction.getText().toString(), (Float.valueOf(et_amountTransaction.getText().toString()) * isExpense), date);
+        moneyTransaction.save();
+    }
+
+    private int getIndex(String category) {
+        int index = 0;
+        for (int i = 0; i < spinner_CategoryTransaction.getCount(); i++) {
+            if (spinner_CategoryTransaction.getItemAtPosition(i).toString().equals(category)) {
+                index = i;
+            }
+        }
+        return index;
     }
 }

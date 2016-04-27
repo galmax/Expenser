@@ -10,27 +10,23 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.github.sinapple.expenser.AddTransactionActivity">
 
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/input_layout_name_transaction"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
 
-        <!--Transaction name-->
-        <EditText
-            android:id="@+id/et_name_transaction"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/activity_element_margin"
-            android:layout_marginLeft="@dimen/activity_element_marginLeft"
-            android:layout_marginRight="@dimen/activity_element_margin"
-            android:layout_marginTop="@dimen/activity_element_margin"
-            android:background="@android:color/transparent"
-            android:ellipsize="end"
-            android:ems="10"
-            android:hint="Name"
-            android:inputType="textCapSentences|textPersonName"
-            android:textSize="@dimen/text_size_activity_add_transaction" />
-    </android.support.design.widget.TextInputLayout>
+    <!--Transaction name-->
+    <EditText
+        android:id="@+id/et_name_transaction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/activity_element_margin"
+        android:layout_marginLeft="@dimen/activity_element_marginLeft"
+        android:layout_marginRight="@dimen/activity_element_margin"
+        android:layout_marginTop="@dimen/activity_element_margin"
+        android:background="@android:color/transparent"
+        android:ellipsize="end"
+        android:ems="10"
+        android:hint="Name"
+        android:inputType="textCapSentences|textPersonName"
+        android:textSize="@dimen/text_size_activity_add_transaction" />
+
 
     <!--Separator between  editText-->
     <View
@@ -70,30 +66,28 @@
         android:layout_height="1dp"
         android:background="@color/list_separator_color" />
 
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
 
-        <!--Amount-->
-        <EditText
-            android:id="@+id/et_amount_transaction"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/activity_element_margin"
-            android:layout_marginLeft="@dimen/activity_element_marginLeft"
-            android:layout_marginRight="@dimen/activity_element_margin"
-            android:layout_marginTop="@dimen/activity_element_margin"
-            android:background="@android:color/transparent"
-            android:ems="10"
-            android:hint="Amount"
-            android:inputType="numberDecimal"
-            android:textSize="@dimen/text_size_activity_add_transaction" />
-    </android.support.design.widget.TextInputLayout>
+    <!--Amount-->
+    <EditText
+        android:id="@+id/et_amount_transaction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/activity_element_margin"
+        android:layout_marginLeft="@dimen/activity_element_marginLeft"
+        android:layout_marginRight="@dimen/activity_element_margin"
+        android:layout_marginTop="@dimen/activity_element_margin"
+        android:background="@android:color/transparent"
+        android:ems="10"
+        android:hint="Amount"
+        android:inputType="numberDecimal"
+        android:textSize="@dimen/text_size_activity_add_transaction" />
+
 
     <!--Separator between  editText-->
     <View
         android:layout_width="fill_parent"
         android:layout_height="1dp"
+        android:layout_marginTop="5dp"
         android:background="@color/list_separator_color" />
 
     <!--Separator between  editText-->
@@ -118,9 +112,9 @@
         <TextView
             android:id="@+id/tv_date"
             android:layout_width="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <Button
             android:id="@+id/bt_set_date"
@@ -135,25 +129,20 @@
         android:layout_height="1dp"
         android:background="@color/list_separator_color" />
 
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/input_layout_description_transaction"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
 
-        <!--Transaction description-->
-        <EditText
-            android:id="@+id/et_description_transaction"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/activity_element_margin"
-            android:layout_marginLeft="@dimen/activity_element_marginLeft"
-            android:layout_marginRight="@dimen/activity_element_margin"
-            android:layout_marginTop="@dimen/activity_element_margin"
-            android:background="@android:color/transparent"
-            android:ems="10"
-            android:hint="Description"
-            android:inputType="textMultiLine"
-            android:textSize="@dimen/text_size_activity_add_transaction" />
-    </android.support.design.widget.TextInputLayout>
+    <!--Transaction description-->
+    <EditText
+        android:id="@+id/et_description_transaction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/activity_element_margin"
+        android:layout_marginLeft="@dimen/activity_element_marginLeft"
+        android:layout_marginRight="@dimen/activity_element_margin"
+        android:layout_marginTop="@dimen/activity_element_margin"
+        android:background="@android:color/transparent"
+        android:ems="10"
+        android:hint="Description"
+        android:inputType="textMultiLine"
+        android:textSize="@dimen/text_size_activity_add_transaction" />
 
 </LinearLayout>
