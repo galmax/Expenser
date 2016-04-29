@@ -1,5 +1,6 @@
 package com.github.sinapple.expenser;
 
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +11,6 @@ import com.github.sinapple.expenser.model.MoneyTransaction;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -18,8 +18,8 @@ import java.util.Locale;
 /**
  * Adapter is used to generate views with transaction info for RecyclerView
  */
-public class CustomRListAdapter extends RecyclerView.Adapter<CustomRListAdapter.ViewHolder>{
-    List<MoneyTransaction> mTransactions;
+public class CustomRListAdapter extends RecyclerView.Adapter<CustomRListAdapter.ViewHolder> implements RecyclerViewItemCallback.ItemTouchHelperAdapter{
+    private List<MoneyTransaction> mTransactions;
 
     //Provide a reference to the views for each data item
     public class ViewHolder extends RecyclerView.ViewHolder{
@@ -37,6 +37,7 @@ public class CustomRListAdapter extends RecyclerView.Adapter<CustomRListAdapter.
             mAmount = (TextView)itemView.findViewById(R.id.amount);
             mDate = (TextView)itemView.findViewById(R.id.date);
         }
+
     }
 
     //Suitable constructor
@@ -71,9 +72,37 @@ public class CustomRListAdapter extends RecyclerView.Adapter<CustomRListAdapter.
         holder.mDate.setText(dateString);
     }
 
-    //Return the size of your dataset
+    //Return the size of your data set
     @Override
     public int getItemCount() {
         return mTransactions.size();
     }
+
+    //Remove some item. Usually called when the swipe gesture has been performed.
+    @Override
+    public void onItemDismiss(View messageOutput, int position){
+        final int p = position;
+        final MoneyTransaction x = mTransactions.remove(position);
+        notifyDataSetChanged();
+        Snackbar.make(messageOutput, R.string.message_transaction_deleted, Snackbar.LENGTH_SHORT)
+                .setAction(R.string.cancel, new View.OnClickListener() {
+                    //Return transaction in the list when user have canceled removing
+                    @Override
+                    public void onClick(View v) {
+                        mTransactions.add(p, x);
+                        notifyItemInserted(p);
+                    }
+                })
+                .setCallback(new Snackbar.Callback() {
+                    //Final removing the transaction
+                    @Override
+                    public void onDismissed(Snackbar snackbar, int event) {
+                        if (event != Snackbar.Callback.DISMISS_EVENT_ACTION)
+                            x.delete();
+                        super.onDismissed(snackbar, event);
+                    }
+                }).show();
+    }
+
+
 }

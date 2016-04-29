@@ -5,13 +5,16 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,13 +39,11 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
                 //intent to AddTransactionsActivity
                 Intent intentToTransaction = new Intent(MainActivity.this, AddTransactionActivity.class);
                 //send key to AddTransactionActivity.class
                 intentToTransaction.putExtra("whatDo", "editExpense");
-                intentToTransaction.putExtra("Id", 2);
+                intentToTransaction.putExtra("Id", 1);
                 startActivity(intentToTransaction);
             }
         });
@@ -55,15 +56,19 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-
+        //initializeDB();
         //Initialize RecyclerList
         RecyclerView list = (RecyclerView) findViewById(R.id.transaction_list);
         list.setLayoutManager(new LinearLayoutManager(this));
         CustomRListAdapter adapter = new CustomRListAdapter(MoneyTransaction.listAll(MoneyTransaction.class));
         list.setAdapter(adapter);
+        ItemTouchHelper.Callback callback = new RecyclerViewItemCallback(adapter, ContextCompat.getColor(this, R.color.colorAccent));
+        ItemTouchHelper helper = new ItemTouchHelper(callback);
+        helper.attachToRecyclerView(list);
     }
 
     private static void initializeDB() {
+
         //create Currency
         Currency mainCurrency = new Currency("Euro", "EUR", "\u20ac");
         mainCurrency.save();
@@ -71,25 +76,16 @@ public class MainActivity extends AppCompatActivity
         Wallet mainWallet = new Wallet("My Wallet", "Sanya`s wallet", 0, mainCurrency);
         mainWallet.save();
         //create TransactionCategory
-        TransactionCategory transactionCategoryFood = new TransactionCategory("Food", "This category about food", false);
-        transactionCategoryFood.save();
+        TransactionCategory transactionCategoryFood = TransactionCategory.listAll(TransactionCategory.class).get(0);
         //create TransactionCategory
-        TransactionCategory transactionCategoryTransport = new TransactionCategory("Transport", "This category about transport", false);
-        transactionCategoryTransport.save();
+        TransactionCategory transactionCategorySalary = TransactionCategory.listAll(TransactionCategory.class).get(2);
         //create TransactionCategory
-        TransactionCategory transactionCategorySalary = new TransactionCategory("Salary", "This category about salary", true);
-        transactionCategorySalary.save();
-        //create TransactionCategory
-        TransactionCategory transactionCategoryPremium = new TransactionCategory("Premium", "This category about premium", true);
-        transactionCategoryPremium.save();
-        //create TransactionCategory
-        TransactionCategory transactionCategoryGym = new TransactionCategory("Gym", "This category about premium", false);
-        transactionCategoryGym.save();
+        TransactionCategory transactionCategoryGym = TransactionCategory.listAll(TransactionCategory.class).get(4);
 
         //create Transactions
-        MoneyTransaction moneyTransaction1 = new MoneyTransaction("Bought bread", transactionCategoryFood, mainWallet, "I bought some bread", 5);
+        MoneyTransaction moneyTransaction1 = new MoneyTransaction("Bought bread", transactionCategoryFood, mainWallet, "I bought some bread", -5);
         moneyTransaction1.save();
-        MoneyTransaction moneyTransaction2 = new MoneyTransaction("Bought subscription", transactionCategoryGym, mainWallet, "I bought subscription on month", 50);
+        MoneyTransaction moneyTransaction2 = new MoneyTransaction("Bought subscription", transactionCategoryGym, mainWallet, "I bought subscription on month", -50);
         moneyTransaction2.save();
         MoneyTransaction moneyTransaction3 = new MoneyTransaction("My salary", transactionCategorySalary, mainWallet, "I get salary", 270);
         moneyTransaction3.save();

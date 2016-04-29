@@ -8,4 +8,6 @@
     <string name="nav_expenses">Expenses</string>
     <string name="nav_incomes">Incomes</string>
     <string name="nav_categories">Categories</string>
+    <string name="cancel">Cancel</string>
+    <string name="message_transaction_deleted">Transaction has been removed</string>
 </resources>

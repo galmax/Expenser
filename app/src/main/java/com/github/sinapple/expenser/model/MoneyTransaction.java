@@ -65,7 +65,11 @@ public class MoneyTransaction extends SugarRecord {
         mDate = date;
     }
 
-    //Constructors
+    /*
+    * Constructors
+    * If you wanna create Transaction that represents expense, pass negative value into constructor,
+    * otherwise to create income pass positive value
+    */
 
     //Default constructor is for ORM DB
     public MoneyTransaction() {
