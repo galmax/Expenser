@@ -32,7 +32,6 @@ public class AddTransactionActivity extends AppCompatActivity {
     List<TransactionCategory> transactionCategories;
     TransactionCategory transactionCategory;
     MoneyTransaction moneyTransactionForEdit;
-    List<MoneyTransaction> moneyTransactions;
     String whatDo;
     SimpleDateFormat sdf;
     //get object wallet
@@ -67,8 +66,7 @@ public class AddTransactionActivity extends AppCompatActivity {
         //get date object
         sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
 
-        moneyTransactions = MoneyTransaction.listAll(MoneyTransaction.class);
-        moneyTransactionForEdit = moneyTransactions.get(intentTransaction.getExtras().getInt("location"));
+        moneyTransactionForEdit =(MoneyTransaction)MoneyTransaction.findById(MoneyTransaction.class,intentTransaction.getExtras().getInt("Id"));
 
         switch (whatDo) {
 
