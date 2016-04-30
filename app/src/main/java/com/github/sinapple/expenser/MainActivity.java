@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        //initializeDB();
+        addTestData();
         //Initialize RecyclerList
         RecyclerView list = (RecyclerView) findViewById(R.id.transaction_list);
         list.setLayoutManager(new LinearLayoutManager(this));
@@ -70,19 +70,55 @@ public class MainActivity extends AppCompatActivity
     }
 
     private static void initializeDB() {
-
         //create Currency
         Currency mainCurrency = new Currency("Euro", "EUR", "\u20ac");
         mainCurrency.save();
-        //create Wallet
-        Wallet mainWallet = new Wallet("My Wallet", "Sanya`s wallet", 0, mainCurrency);
+
+        Wallet mainWallet = new Wallet("DefaultWallet", null, 0, mainCurrency);
         mainWallet.save();
+
         //create TransactionCategory
-        TransactionCategory transactionCategoryFood = TransactionCategory.listAll(TransactionCategory.class).get(0);
+        TransactionCategory transactionCategoryFood = new TransactionCategory("Food", "This category about food", false);
+        transactionCategoryFood.save();
         //create TransactionCategory
-        TransactionCategory transactionCategorySalary = TransactionCategory.listAll(TransactionCategory.class).get(2);
+        TransactionCategory transactionCategoryTransport = new TransactionCategory("Transport", "This category about transport", false);
+        transactionCategoryTransport.save();
         //create TransactionCategory
-        TransactionCategory transactionCategoryGym = TransactionCategory.listAll(TransactionCategory.class).get(4);
+        TransactionCategory transactionCategorySalary = new TransactionCategory("Salary", "This category about salary", true);
+        transactionCategorySalary.save();
+        //create TransactionCategory
+        TransactionCategory transactionCategoryPremium = new TransactionCategory("Premium", "This category about premium", true);
+        transactionCategoryPremium.save();
+        //create TransactionCategory
+        TransactionCategory transactionCategoryGym = new TransactionCategory("Gym", "This category about premium", false);
+        transactionCategoryGym.save();
+
+        //create Transactions
+        MoneyTransaction moneyTransaction1 = new MoneyTransaction("Bought bread", transactionCategoryFood, mainWallet, "I bought some bread", -5);
+        moneyTransaction1.save();
+        MoneyTransaction moneyTransaction2 = new MoneyTransaction("Bought subscription", transactionCategoryGym, mainWallet, "I bought subscription on month", -50);
+        moneyTransaction2.save();
+        MoneyTransaction moneyTransaction3 = new MoneyTransaction("My salary", transactionCategorySalary, mainWallet, "I get salary", 270);
+        moneyTransaction3.save();
+        MoneyTransaction moneyTransaction4 = new MoneyTransaction("Banana", transactionCategoryFood, mainWallet, "Bought two kilogram of bananas in market at my home", -60);
+        moneyTransaction4.save();
+        MoneyTransaction moneyTransaction5 = new MoneyTransaction("Sport nutrition", transactionCategoryGym, mainWallet, null, -150);
+        moneyTransaction5.save();
+    }
+
+    private static void addTestData(){
+        Wallet mainWallet;
+        TransactionCategory transactionCategoryFood;
+        TransactionCategory transactionCategorySalary;
+        TransactionCategory transactionCategoryGym;
+        try {
+            mainWallet = Wallet.listAll(Wallet.class).get(0);
+            transactionCategoryFood = TransactionCategory.listAll(TransactionCategory.class).get(0);
+            transactionCategorySalary = TransactionCategory.listAll(TransactionCategory.class).get(2);
+            transactionCategoryGym = TransactionCategory.listAll(TransactionCategory.class).get(4);
+        }catch (Exception x){
+            return;
+        }
 
         //create Transactions
         MoneyTransaction moneyTransaction1 = new MoneyTransaction("Bought bread", transactionCategoryFood, mainWallet, "I bought some bread", -5);
