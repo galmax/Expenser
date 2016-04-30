@@ -66,7 +66,7 @@ public class AddTransactionActivity extends AppCompatActivity {
         //get date object
         sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
 
-        moneyTransactionForEdit =(MoneyTransaction)MoneyTransaction.findById(MoneyTransaction.class,intentTransaction.getExtras().getInt("Id"));
+        moneyTransactionForEdit = MoneyTransaction.findById(MoneyTransaction.class, intentTransaction.getLongExtra("Id", 1));
 
         switch (whatDo) {
 

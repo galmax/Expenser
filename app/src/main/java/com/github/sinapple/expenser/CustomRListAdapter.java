@@ -1,5 +1,7 @@
 package com.github.sinapple.expenser;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,8 +20,9 @@ import java.util.Locale;
 /**
  * Adapter is used to generate views with transaction info for RecyclerView
  */
-public class CustomRListAdapter extends RecyclerView.Adapter<CustomRListAdapter.ViewHolder> implements RecyclerViewItemCallback.ItemTouchHelperAdapter{
+public class CustomRListAdapter extends RecyclerView.Adapter<CustomRListAdapter.ViewHolder> implements RecyclerViewItemCallback.ItemTouchHelperAdapter, RecycleItemClickListener.OnItemClickListener{
     private List<MoneyTransaction> mTransactions;
+    private Context mContext;
 
     //Provide a reference to the views for each data item
     public class ViewHolder extends RecyclerView.ViewHolder{
@@ -31,6 +34,8 @@ public class CustomRListAdapter extends RecyclerView.Adapter<CustomRListAdapter.
 
         public ViewHolder(View itemView) {
             super(itemView);
+            itemView.setClickable(true);
+            itemView.setLongClickable(true);
             mTitle = (TextView)itemView.findViewById(R.id.title);
             mCategory = (TextView)itemView.findViewById(R.id.category);
             mDescription = (TextView)itemView.findViewById(R.id.description);
@@ -41,7 +46,8 @@ public class CustomRListAdapter extends RecyclerView.Adapter<CustomRListAdapter.
     }
 
     //Suitable constructor
-    public CustomRListAdapter(List<MoneyTransaction> transactions) {
+    public CustomRListAdapter(Context activityContext, List<MoneyTransaction> transactions) {
+        mContext = activityContext;
         mTransactions = transactions;
     }
 
@@ -104,5 +110,12 @@ public class CustomRListAdapter extends RecyclerView.Adapter<CustomRListAdapter.
                 }).show();
     }
 
-
+    @Override
+    public void onItemClick(View view, int position) {
+        Intent editIntent = new Intent(view.getContext(), AddTransactionActivity.class);
+        editIntent.putExtra("whatDo", "editExpense");
+        editIntent.putExtra("Id", mTransactions.get(position).getId());
+        editIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        mContext.startActivity(editIntent);
+    }
 }

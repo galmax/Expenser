@@ -60,8 +60,10 @@ public class MainActivity extends AppCompatActivity
         //Initialize RecyclerList
         RecyclerView list = (RecyclerView) findViewById(R.id.transaction_list);
         list.setLayoutManager(new LinearLayoutManager(this));
-        CustomRListAdapter adapter = new CustomRListAdapter(MoneyTransaction.listAll(MoneyTransaction.class));
+        CustomRListAdapter adapter = new CustomRListAdapter(getApplicationContext(), MoneyTransaction.find(MoneyTransaction.class, "m_amount < ?", "0"));
+        RecycleItemClickListener clickListener = new RecycleItemClickListener(this.getApplicationContext(), adapter);
         list.setAdapter(adapter);
+        list.addOnItemTouchListener(clickListener);
         ItemTouchHelper.Callback callback = new RecyclerViewItemCallback(adapter, ContextCompat.getColor(this, R.color.colorAccent));
         ItemTouchHelper helper = new ItemTouchHelper(callback);
         helper.attachToRecyclerView(list);
@@ -89,6 +91,10 @@ public class MainActivity extends AppCompatActivity
         moneyTransaction2.save();
         MoneyTransaction moneyTransaction3 = new MoneyTransaction("My salary", transactionCategorySalary, mainWallet, "I get salary", 270);
         moneyTransaction3.save();
+        MoneyTransaction moneyTransaction4 = new MoneyTransaction("Banana", transactionCategoryFood, mainWallet, "Bought two kilogram of bananas in market at my home", -60);
+        moneyTransaction4.save();
+        MoneyTransaction moneyTransaction5 = new MoneyTransaction("Sport nutrition", transactionCategoryGym, mainWallet, null, -150);
+        moneyTransaction5.save();
     }
 
     @Override
