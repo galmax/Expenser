@@ -10,4 +10,8 @@
     <string name="nav_categories">Categories</string>
     <string name="cancel">Cancel</string>
     <string name="message_transaction_deleted">Transaction has been removed</string>
+    <string-array name="category_type">
+        <item>Income</item>
+        <item>Expense</item>
+    </string-array>
 </resources>

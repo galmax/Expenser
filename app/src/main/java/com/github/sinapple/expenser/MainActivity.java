@@ -78,19 +78,19 @@ public class MainActivity extends AppCompatActivity
         mainWallet.save();
 
         //create TransactionCategory
-        TransactionCategory transactionCategoryFood = new TransactionCategory("Food", "This category about food", false);
+        TransactionCategory transactionCategoryFood = new TransactionCategory("Food", "This category about food", true);
         transactionCategoryFood.save();
         //create TransactionCategory
-        TransactionCategory transactionCategoryTransport = new TransactionCategory("Transport", "This category about transport", false);
+        TransactionCategory transactionCategoryTransport = new TransactionCategory("Transport", "This category about transport", true);
         transactionCategoryTransport.save();
         //create TransactionCategory
-        TransactionCategory transactionCategorySalary = new TransactionCategory("Salary", "This category about salary", true);
+        TransactionCategory transactionCategorySalary = new TransactionCategory("Salary", "This category about salary", false);
         transactionCategorySalary.save();
         //create TransactionCategory
-        TransactionCategory transactionCategoryPremium = new TransactionCategory("Premium", "This category about premium", true);
+        TransactionCategory transactionCategoryPremium = new TransactionCategory("Premium", "This category about premium", false);
         transactionCategoryPremium.save();
         //create TransactionCategory
-        TransactionCategory transactionCategoryGym = new TransactionCategory("Gym", "This category about premium", false);
+        TransactionCategory transactionCategoryGym = new TransactionCategory("Gym", "This category about premium", true);
         transactionCategoryGym.save();
 
         //create Transactions
@@ -176,7 +176,8 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_incomes) {
 
         } else if (id == R.id.nav_categories) {
-
+            Intent in=new Intent(this,CategoryActivity.class);
+            startActivity(in);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

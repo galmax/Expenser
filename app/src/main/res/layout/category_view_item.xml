@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Mark-up of each item in the category list-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/recycle_item_activity_vertical_margin"
+        android:paddingBottom="@dimen/recycle_item_activity_vertical_margin"
+        android:paddingLeft="@dimen/recycle_item_activity_horizontal_margin"
+        android:paddingRight="@dimen/recycle_item_activity_horizontal_margin">
+
+        <!--Category name-->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginRight="@dimen/recycle_element_margin"
+            android:layout_marginEnd="@dimen/recycle_element_margin"
+            android:layout_marginBottom="@dimen/recycle_element_margin"
+
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@android:color/black"
+            android:id="@+id/title_category"
+            android:maxLines="@integer/recycler_view_max_lines"
+            android:ellipsize="end" />
+
+        <!--Category description-->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:id="@+id/description_category"
+            android:layout_below="@+id/title_category"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="@dimen/recycle_element_margin"
+            android:layout_marginRight="@dimen/recycle_element_margin"
+            android:layout_marginEnd="@dimen/recycle_element_margin"
+            android:maxLines="@integer/recycler_view_max_lines"
+            android:ellipsize="end"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"/>
+
+    </RelativeLayout>
+
+    <!--Separator between list items-->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_alignParentBottom="true"
+        android:background = "@color/list_separator_color"
+        />
+</LinearLayout>

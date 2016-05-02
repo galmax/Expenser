@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="true">
+    <LinearLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="10dip">
+
+        <TextView
+            android:id="@+id/expenseListLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Expense categories"
+            android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/expenseList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dip"
+            android:background="#32d93737"
+            android:focusable="false">
+        </android.support.v7.widget.RecyclerView>
+
+        <TextView
+            android:id="@+id/incomeListLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dip"
+            android:gravity="center_vertical"
+            android:text="Income categories"
+            android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/incomeList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dip"
+            android:background="#3256df45" >
+        </android.support.v7.widget.RecyclerView>
+    </LinearLayout>
+
+</ScrollView>

@@ -72,26 +72,26 @@ public class AddTransactionActivity extends AppCompatActivity {
 
             case "addExpense":
                 setTitle("Add Expense");
-                transactionCategories = TransactionCategory.find(TransactionCategory.class, "m_expense_category=?", "0");
+                transactionCategories = TransactionCategory.find(TransactionCategory.class, "m_expense_category=?", "1");
                 isExpense = -1;
                 showSpinner(transactionCategories);
                 break;
             case "editExpense":
                 setTitle("Edit Expense");
-                transactionCategories = TransactionCategory.find(TransactionCategory.class, "m_expense_category=?", "0");
+                transactionCategories = TransactionCategory.find(TransactionCategory.class, "m_expense_category=?", "1");
                 isExpense = -1;
                 showSpinner(transactionCategories);
                 dataFillingDb();
                 break;
             case "addIncome":
                 setTitle("Add Income");
-                transactionCategories = TransactionCategory.find(TransactionCategory.class, "m_expense_category=?", "1");
+                transactionCategories = TransactionCategory.find(TransactionCategory.class, "m_expense_category=?", "0");
                 isExpense = 1;
                 showSpinner(transactionCategories);
                 break;
             case "editIncome":
                 setTitle("Edit Income");
-                transactionCategories = TransactionCategory.find(TransactionCategory.class, "m_expense_category=?", "1");
+                transactionCategories = TransactionCategory.find(TransactionCategory.class, "m_expense_category=?", "0");
                 isExpense = 1;
                 showSpinner(transactionCategories);
                 dataFillingDb();
