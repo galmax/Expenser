@@ -7,7 +7,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -23,7 +22,6 @@ import java.util.List;
 
 public class AddTransactionActivity extends AppCompatActivity {
 
-    Button bt_setDate;
     EditText et_nameTransaction, et_amountTransaction, et_descriptionTransaction;
     TextView tv_dateTransaction;
     Spinner spinner_CategoryTransaction;
@@ -36,6 +34,7 @@ public class AddTransactionActivity extends AppCompatActivity {
     SimpleDateFormat sdf;
     //get object wallet
     Wallet wallet = Wallet.findById(Wallet.class, 1);
+    private boolean isEmpty=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +42,6 @@ public class AddTransactionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_transaction);
 
         //initialize edit,text,spinner
-        bt_setDate = (Button) findViewById(R.id.bt_set_date);
         et_nameTransaction = (EditText) findViewById(R.id.et_name_transaction);
         et_amountTransaction = (EditText) findViewById(R.id.et_amount_transaction);
         et_descriptionTransaction = (EditText) findViewById(R.id.et_description_transaction);
@@ -51,7 +49,7 @@ public class AddTransactionActivity extends AppCompatActivity {
         spinner_CategoryTransaction = (Spinner) findViewById(R.id.spinner_category);
 
         //click on button for set Date
-        bt_setDate.setOnClickListener(new View.OnClickListener() {
+        tv_dateTransaction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DatePicker datePicker = new DatePicker();
@@ -115,14 +113,17 @@ public class AddTransactionActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.add_transaction) {
-            if (whatDo.equals("addExpense") || whatDo.equals("addIncome")) {
-                saveTransaction();
-            } else if (whatDo.equals("editExpense") || whatDo.equals("editIncome")) {
-                editTransaction();
+            isEmpty();
+            if(!isEmpty) {
+                if (whatDo.equals("addExpense") || whatDo.equals("addIncome")) {
+                    saveTransaction();
+                } else if (whatDo.equals("editExpense") || whatDo.equals("editIncome")) {
+                    editTransaction();
+                }
+                //return ti MainActivity
+                Intent intentToMain = new Intent(AddTransactionActivity.this, MainActivity.class);
+                startActivity(intentToMain);
             }
-            //return ti MainActivity
-            Intent intentToMain = new Intent(AddTransactionActivity.this, MainActivity.class);
-            startActivity(intentToMain);
             return true;
         } else if (id == R.id.clean_transaction) {
             et_nameTransaction.setText("");
@@ -187,5 +188,21 @@ public class AddTransactionActivity extends AppCompatActivity {
             }
         }
         return index;
+    }
+
+    private void isEmpty(){
+        isEmpty=false;
+        if(et_nameTransaction.getText().toString().equals("")){
+            et_nameTransaction.setError("Enter Name");
+            isEmpty=true;
+        }
+        if(et_amountTransaction.getText().toString().equals("")){
+            et_amountTransaction.setError("Enter Amount");
+            isEmpty=true;
+        }
+        if((tv_dateTransaction.getText().toString().equals("")&&!isEmpty)){
+            String sDate = sdf.format(new Date());
+            tv_dateTransaction.setText(sDate);
+        }
     }
 }

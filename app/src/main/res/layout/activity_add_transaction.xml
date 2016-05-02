@@ -6,7 +6,6 @@
     android:focusableInTouchMode="false"
     android:measureWithLargestChild="false"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.github.sinapple.expenser.AddTransactionActivity">
 
@@ -16,16 +15,15 @@
         android:id="@+id/et_name_transaction"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/activity_element_margin"
+        android:layout_marginBottom="7dp"
         android:layout_marginLeft="@dimen/activity_element_marginLeft"
-        android:layout_marginRight="@dimen/activity_element_margin"
-        android:layout_marginTop="@dimen/activity_element_margin"
+        android:layout_marginTop="7dp"
         android:background="@android:color/transparent"
         android:ellipsize="end"
         android:ems="10"
         android:hint="Name"
         android:inputType="textCapSentences|textPersonName"
-        android:textSize="@dimen/text_size_activity_add_transaction" />
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
 
     <!--Separator between  editText-->
@@ -44,13 +42,10 @@
             android:id="@+id/textView_category"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/activity_element_margin"
+            android:layout_gravity="center_vertical"
             android:layout_marginLeft="@dimen/activity_element_marginLeft"
-            android:layout_marginRight="@dimen/activity_element_margin"
-            android:layout_marginTop="@dimen/activity_element_margin"
-            android:text="Category"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textSize="@dimen/text_size_activity_add_transaction" />
+            android:text="Category: "
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <!--Category field-->
         <Spinner
@@ -72,22 +67,20 @@
         android:id="@+id/et_amount_transaction"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/activity_element_margin"
+        android:layout_marginBottom="7dp"
         android:layout_marginLeft="@dimen/activity_element_marginLeft"
-        android:layout_marginRight="@dimen/activity_element_margin"
-        android:layout_marginTop="@dimen/activity_element_margin"
+        android:layout_marginTop="7dp"
         android:background="@android:color/transparent"
         android:ems="10"
         android:hint="Amount"
         android:inputType="numberDecimal"
-        android:textSize="@dimen/text_size_activity_add_transaction" />
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
 
     <!--Separator between  editText-->
     <View
         android:layout_width="fill_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="5dp"
         android:background="@color/list_separator_color" />
 
     <!--Separator between  editText-->
@@ -95,6 +88,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="7dp"
+        android:layout_marginTop="7dp"
         android:orientation="horizontal">
 
 
@@ -102,26 +97,20 @@
             android:id="@+id/textView__name_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/activity_element_margin"
+            android:layout_gravity="center_vertical"
             android:layout_marginLeft="@dimen/activity_element_marginLeft"
-            android:layout_marginRight="@dimen/activity_element_margin"
-            android:layout_marginTop="@dimen/activity_element_margin"
             android:text="Date: "
-            android:textSize="@dimen/text_size_activity_add_transaction" />
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <TextView
             android:id="@+id/tv_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:clickable="true"
+            android:textColor="@android:color/black"
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
 
-        <Button
-            android:id="@+id/bt_set_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/activity_element_marginLeft"
-            android:text="Set Date" />
     </LinearLayout>
 
     <View
@@ -135,14 +124,13 @@
         android:id="@+id/et_description_transaction"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/activity_element_margin"
+        android:layout_marginBottom="7dp"
         android:layout_marginLeft="@dimen/activity_element_marginLeft"
-        android:layout_marginRight="@dimen/activity_element_margin"
-        android:layout_marginTop="@dimen/activity_element_margin"
+        android:layout_marginTop="7dp"
         android:background="@android:color/transparent"
         android:ems="10"
         android:hint="Description"
         android:inputType="textMultiLine"
-        android:textSize="@dimen/text_size_activity_add_transaction" />
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
 </LinearLayout>
