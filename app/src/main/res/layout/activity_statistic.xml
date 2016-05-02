@@ -9,21 +9,41 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:gravity="center"
         android:background="@color/statistic_list_backColor"
-        android:layout_margin="@dimen/statistic_activity_elements_margin"
-        android:padding="@dimen/statistic_distribution_padding"
-        android:gravity="center">
+        android:padding="@dimen/statistic_datePanel_padding"
+        android:layout_marginRight="@dimen/statistic_activity_elements_margin"
+        android:layout_marginLeft="@dimen/statistic_activity_elements_margin">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/statistic_distribution"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:layout_marginRight="@dimen/statistic_margin_between_elements"/>
-        <Spinner
-            android:layout_width="match_parent"
+            android:text="Statistic from"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:textSize="5pt"
+            android:text="date"/>
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/Widget.AppCompat.Spinner.Underlined">
-        </Spinner>
+            android:text="to"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:textSize="5pt"
+            android:text="date"/>
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/divider_color" />
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_clear_black_24dp"
+            android:layout_marginLeft="@dimen/activity_element_margin"/>
+
+
     </LinearLayout>
 
     <com.github.mikephil.charting.charts.PieChart
@@ -32,7 +52,6 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/statistic_activity_elements_margin"
         android:layout_weight="0.5">
-
     </com.github.mikephil.charting.charts.PieChart>
 
     <LinearLayout
