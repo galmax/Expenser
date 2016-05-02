@@ -23,6 +23,7 @@ import com.github.sinapple.expenser.model.Currency;
 import com.github.sinapple.expenser.model.MoneyTransaction;
 import com.github.sinapple.expenser.model.TransactionCategory;
 import com.github.sinapple.expenser.model.Wallet;
+import com.github.sinapple.expenser.statistic.StatisticActivity;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -176,8 +177,10 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_incomes) {
 
         } else if (id == R.id.nav_categories) {
-            Intent in=new Intent(this,CategoryActivity.class);
+            Intent in=new Intent(this, CategoryActivity.class);
             startActivity(in);
+        } else if(id == R.id.nav_statistic){
+            startActivity(new Intent(this, StatisticActivity.class));
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
