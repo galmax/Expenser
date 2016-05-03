@@ -7,15 +7,17 @@
 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="10dip">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/expenseListLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Expense categories"
-            android:textAppearance="?android:attr/textAppearanceLarge"/>
+            android:layout_marginTop="10dip"
+            android:layout_marginLeft="10dip"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@android:color/black"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/expenseList"
@@ -31,9 +33,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dip"
+            android:layout_marginLeft="10dip"
             android:gravity="center_vertical"
             android:text="Income categories"
-            android:textAppearance="?android:attr/textAppearanceLarge"/>
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@android:color/black"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/incomeList"

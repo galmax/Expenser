@@ -25,6 +25,7 @@ public class NewCategoryActivity extends AppCompatActivity {
     EditText new_category_name,new_category_description;
     Spinner new_category_type;
     LinearLayout category_elements;
+    View sepLine;
     TransactionCategory editedTransactionCategory;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,11 +38,13 @@ public class NewCategoryActivity extends AppCompatActivity {
         new_category_description=(EditText)findViewById(R.id.new_category_description);
         category_elements=(LinearLayout)findViewById(R.id.category_elements);
         new_category_type=(Spinner)findViewById(R.id.new_category_type);
+        sepLine=(View)findViewById(R.id.sepLine);
 
         if(EDIT_CATEGORY) {
             setTitle("Edit Category");
             //it's impossible to change category type once it has been created, so we hide the spinner and its surrounding elements
             category_elements.setVisibility(View.GONE);
+            sepLine.setVisibility(View.GONE);
             //get edited category using its id
             id=intent.getExtras().getLong("id");
             editedTransactionCategory = TransactionCategory.findById(TransactionCategory.class, id);
