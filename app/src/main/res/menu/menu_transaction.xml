@@ -12,6 +12,6 @@
         android:id="@+id/clean_transaction"
         android:icon="@drawable/ic_menu_clear"
         android:orderInCategory="1"
-        android:title="f"
+        android:title=""
         app:showAsAction="always" />
 </menu>

@@ -21,7 +21,7 @@
         android:background="@android:color/transparent"
         android:ellipsize="end"
         android:ems="10"
-        android:hint="Name"
+        android:hint="@string/name_add_transaction"
         android:inputType="textCapSentences|textPersonName"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -44,7 +44,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="@dimen/activity_element_marginLeft"
-            android:text="Category: "
+            android:text="@string/category_add_transaction"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <!--Category field-->
@@ -72,7 +72,7 @@
         android:layout_marginTop="7dp"
         android:background="@android:color/transparent"
         android:ems="10"
-        android:hint="Amount"
+        android:hint="@string/amount_add_transaction"
         android:inputType="numberDecimal"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -99,7 +99,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="@dimen/activity_element_marginLeft"
-            android:text="Date: "
+            android:text="@string/date_add_transaction"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <TextView
@@ -129,7 +129,7 @@
         android:layout_marginTop="7dp"
         android:background="@android:color/transparent"
         android:ems="10"
-        android:hint="Description"
+        android:hint="@string/description_add_transaction"
         android:inputType="textMultiLine"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 

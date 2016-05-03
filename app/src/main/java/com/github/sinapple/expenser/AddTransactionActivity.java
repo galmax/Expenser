@@ -69,26 +69,26 @@ public class AddTransactionActivity extends AppCompatActivity {
         switch (whatDo) {
 
             case "addExpense":
-                setTitle("Add Expense");
+                setTitle(getString(R.string.add_expense));
                 transactionCategories = TransactionCategory.find(TransactionCategory.class, "m_expense_category=?", "1");
                 isExpense = -1;
                 showSpinner(transactionCategories);
                 break;
             case "editExpense":
-                setTitle("Edit Expense");
+                setTitle(getString(R.string.edit_expense));
                 transactionCategories = TransactionCategory.find(TransactionCategory.class, "m_expense_category=?", "1");
                 isExpense = -1;
                 showSpinner(transactionCategories);
                 dataFillingDb();
                 break;
             case "addIncome":
-                setTitle("Add Income");
+                setTitle(getString(R.string.add_income));
                 transactionCategories = TransactionCategory.find(TransactionCategory.class, "m_expense_category=?", "0");
                 isExpense = 1;
                 showSpinner(transactionCategories);
                 break;
             case "editIncome":
-                setTitle("Edit Income");
+                setTitle(getString(R.string.edit_income));
                 transactionCategories = TransactionCategory.find(TransactionCategory.class, "m_expense_category=?", "0");
                 isExpense = 1;
                 showSpinner(transactionCategories);
@@ -193,11 +193,11 @@ public class AddTransactionActivity extends AppCompatActivity {
     private void isEmpty(){
         isEmpty=false;
         if(et_nameTransaction.getText().toString().equals("")){
-            et_nameTransaction.setError("Enter Name");
+            et_nameTransaction.setError(getString(R.string.enter_name));
             isEmpty=true;
         }
         if(et_amountTransaction.getText().toString().equals("")){
-            et_amountTransaction.setError("Enter Amount");
+            et_amountTransaction.setError(getString(R.string.enter_amount));
             isEmpty=true;
         }
         if((tv_dateTransaction.getText().toString().equals("")&&!isEmpty)){

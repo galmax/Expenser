@@ -10,6 +10,17 @@
     <string name="nav_categories">Categories</string>
     <string name="cancel">Cancel</string>
     <string name="message_transaction_deleted">Transaction has been removed</string>
+    <string name="name_add_transaction">Name</string>
+    <string name="category_add_transaction">Category:</string>
+    <string name="amount_add_transaction">Amount</string>
+    <string name="date_add_transaction">Date:</string>
+    <string name="description_add_transaction">Description</string>
+    <string name="add_expense">Add Expense</string>
+    <string name="edit_expense">Edit Expense</string>
+    <string name="add_income">Add Income</string>
+    <string name="edit_income">Edit Income</string>
+    <string name="enter_name">Enter Name</string>
+    <string name="enter_amount">Enter Amount</string>
     <string-array name="category_type">
         <item>Income</item>
         <item>Expense</item>
