@@ -18,11 +18,14 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.github.sinapple.expenser.model.Currency;
 import com.github.sinapple.expenser.model.MoneyTransaction;
 import com.github.sinapple.expenser.model.TransactionCategory;
 import com.github.sinapple.expenser.model.Wallet;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -41,10 +44,16 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
                 //intent to AddTransactionsActivity
                 Intent intentToTransaction = new Intent(MainActivity.this, AddTransactionActivity.class);
-                //send key to AddTransactionActivity.class
-                intentToTransaction.putExtra("whatDo", "addExpense");
-                intentToTransaction.putExtra("Id", 1);
-                startActivity(intentToTransaction);
+                //get Expense categories
+                List<TransactionCategory> transactionCategories = TransactionCategory.find(TransactionCategory.class, "m_expense_category=?", "1");
+                if (transactionCategories.size() != 0) {
+                    //send key to AddTransactionActivity.class
+                    intentToTransaction.putExtra("whatDo", "addExpense");
+                    intentToTransaction.putExtra("Id", 1);
+                    startActivity(intentToTransaction);
+                } else {
+                    Snackbar.make(view, R.string.null_expense, Snackbar.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -55,6 +64,14 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        //write balance in nav_header_main
+        View header = navigationView.getHeaderView(0);
+        TextView tv_balance = (TextView) header.findViewById(R.id.tv_balance);
+        TextView tv_sign = (TextView) header.findViewById(R.id.tv_sign);
+        Wallet wallet = Wallet.findById(Wallet.class, 1);
+        tv_balance.setText(Float.toString(wallet.getBalance()));
+        tv_sign.setText(wallet.getCurrency().getSign());
 
         //addTestData();
         //Initialize RecyclerList
@@ -106,7 +123,7 @@ public class MainActivity extends AppCompatActivity
         moneyTransaction5.save();
     }
 
-    private static void addTestData(){
+    private static void addTestData() {
         Wallet mainWallet;
         TransactionCategory transactionCategoryFood;
         TransactionCategory transactionCategorySalary;
@@ -116,7 +133,7 @@ public class MainActivity extends AppCompatActivity
             transactionCategoryFood = TransactionCategory.listAll(TransactionCategory.class).get(0);
             transactionCategorySalary = TransactionCategory.listAll(TransactionCategory.class).get(2);
             transactionCategoryGym = TransactionCategory.listAll(TransactionCategory.class).get(4);
-        }catch (Exception x){
+        } catch (Exception x) {
             return;
         }
 
@@ -176,7 +193,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_incomes) {
 
         } else if (id == R.id.nav_categories) {
-            Intent in=new Intent(this,CategoryActivity.class);
+            Intent in = new Intent(this, CategoryActivity.class);
             startActivity(in);
         }
 

@@ -139,6 +139,7 @@ public class AddTransactionActivity extends AppCompatActivity {
     private void dataFillingDb() {
         et_nameTransaction.setText(moneyTransactionForEdit.getName());
         et_amountTransaction.setText(String.valueOf(moneyTransactionForEdit.getAmount()));
+        wallet.setBalance(wallet.getBalance()-(Float.valueOf(et_amountTransaction.getText().toString()) * isExpense));
         et_descriptionTransaction.setText(moneyTransactionForEdit.getDescription());
         tv_dateTransaction.setText(sdf.format(moneyTransactionForEdit.getDate()));
         spinner_CategoryTransaction.setSelection(getIndex(moneyTransactionForEdit.getCategory().getName()));
@@ -151,7 +152,8 @@ public class AddTransactionActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         transactionCategory = transactionCategories.get(spinner_CategoryTransaction.getSelectedItemPosition());
-
+        wallet.setBalance(wallet.getBalance()+(Float.valueOf(et_amountTransaction.getText().toString()) * isExpense));
+        wallet.save();
         moneyTransactionForEdit.setAmount((Float.valueOf(et_amountTransaction.getText().toString()) * isExpense));
         moneyTransactionForEdit.setName(et_nameTransaction.getText().toString());
         moneyTransactionForEdit.setDescription(et_descriptionTransaction.getText().toString());
@@ -177,6 +179,10 @@ public class AddTransactionActivity extends AppCompatActivity {
 
         transactionCategory = transactionCategories.get(spinner_CategoryTransaction.getSelectedItemPosition());
         MoneyTransaction moneyTransaction = new MoneyTransaction(et_nameTransaction.getText().toString(), transactionCategory, wallet, et_descriptionTransaction.getText().toString(), (Float.valueOf(et_amountTransaction.getText().toString()) * isExpense), date);
+        //add amount money in wallet
+        wallet.setBalance(wallet.getBalance()+(Float.valueOf(et_amountTransaction.getText().toString()) * isExpense));
+        //save
+        wallet.save();
         moneyTransaction.save();
     }
 
