@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity
         //Initialize RecyclerList
         RecyclerView list = (RecyclerView) findViewById(R.id.transaction_list);
         list.setLayoutManager(new LinearLayoutManager(this));
-        CustomRListAdapter adapter = new CustomRListAdapter(getApplicationContext(), MoneyTransaction.find(MoneyTransaction.class, "m_amount < ?", "0"));
+        CustomRListAdapter adapter = new CustomRListAdapter(this, MoneyTransaction.find(MoneyTransaction.class, "m_amount < ?", "0"));
         RecycleItemClickListener clickListener = new RecycleItemClickListener(this.getApplicationContext(), adapter);
         list.setAdapter(adapter);
         list.addOnItemTouchListener(clickListener);

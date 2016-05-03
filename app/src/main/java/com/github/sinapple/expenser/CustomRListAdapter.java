@@ -1,8 +1,11 @@
 package com.github.sinapple.expenser;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +13,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.github.sinapple.expenser.model.MoneyTransaction;
-
+import com.github.sinapple.expenser.model.Wallet;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -22,8 +25,7 @@ import java.util.Locale;
  */
 public class CustomRListAdapter extends RecyclerView.Adapter<CustomRListAdapter.ViewHolder> implements RecyclerViewItemCallback.ItemTouchHelperAdapter, RecycleItemClickListener.OnItemClickListener{
     private List<MoneyTransaction> mTransactions;
-    private Context mContext;
-
+    AppCompatActivity appC;
     //Provide a reference to the views for each data item
     public class ViewHolder extends RecyclerView.ViewHolder{
         public TextView mTitle;
@@ -46,9 +48,9 @@ public class CustomRListAdapter extends RecyclerView.Adapter<CustomRListAdapter.
     }
 
     //Suitable constructor
-    public CustomRListAdapter(Context activityContext, List<MoneyTransaction> transactions) {
-        mContext = activityContext;
+    public CustomRListAdapter(AppCompatActivity appC, List<MoneyTransaction> transactions) {
         mTransactions = transactions;
+        this.appC=appC;
     }
 
     //Create new views
@@ -87,24 +89,41 @@ public class CustomRListAdapter extends RecyclerView.Adapter<CustomRListAdapter.
     //Remove some item. Usually called when the swipe gesture has been performed.
     @Override
     public void onItemDismiss(View messageOutput, int position){
+        final TextView txtView=(TextView) appC.findViewById(R.id.tv_balance);
         final int p = position;
         final MoneyTransaction x = mTransactions.remove(position);
+        final Wallet w = Wallet.findById(Wallet.class, 1);
+        //balance before
+        final float balanceBefore=w.getBalance();
+        //balance after
+        final float balanceAfter;
+        if (x.isExpense()) balanceAfter=balanceBefore+x.getAmount(); else balanceAfter=balanceBefore-x.getAmount();
+        txtView.setText(Float.toString(balanceAfter));
+        w.setBalance(balanceAfter);
+        w.save();
         notifyDataSetChanged();
         Snackbar.make(messageOutput, R.string.message_transaction_deleted, Snackbar.LENGTH_SHORT)
                 .setAction(R.string.cancel, new View.OnClickListener() {
-                    //Return transaction in the list when user have canceled removing
+                    //Return transaction in the list when user have canceled removing and restore the amount of money in the wallet
                     @Override
                     public void onClick(View v) {
+                        txtView.setText(Float.toString(balanceBefore));
+                        w.setBalance(balanceBefore);
+                        w.save();
                         mTransactions.add(p, x);
                         notifyItemInserted(p);
                     }
                 })
                 .setCallback(new Snackbar.Callback() {
-                    //Final removing the transaction
+                    //Final removing the transaction and changing of money amount
                     @Override
                     public void onDismissed(Snackbar snackbar, int event) {
-                        if (event != Snackbar.Callback.DISMISS_EVENT_ACTION)
+                        if (event != Snackbar.Callback.DISMISS_EVENT_ACTION) {
+                            txtView.setText(Float.toString(balanceAfter));
+                            w.setBalance(balanceAfter);
+                            w.save();
                             x.delete();
+                        }
                         super.onDismissed(snackbar, event);
                     }
                 }).show();
@@ -116,6 +135,6 @@ public class CustomRListAdapter extends RecyclerView.Adapter<CustomRListAdapter.
         editIntent.putExtra("whatDo", "editExpense");
         editIntent.putExtra("Id", mTransactions.get(position).getId());
         editIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        mContext.startActivity(editIntent);
+        appC.startActivity(editIntent);
     }
 }

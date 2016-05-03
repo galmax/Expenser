@@ -4,13 +4,13 @@
     <item
         android:id="@+id/submit_category_data"
         android:icon="@drawable/ic_menu_add"
-        android:orderInCategory="1"
+        android:orderInCategory="2"
         android:title=""
         app:showAsAction="always" />
     <item
         android:id="@+id/clear_category_data"
         android:icon="@drawable/ic_menu_clear"
-        android:orderInCategory="2"
+        android:orderInCategory="1"
         android:title=""
         app:showAsAction="always" />
 </menu>

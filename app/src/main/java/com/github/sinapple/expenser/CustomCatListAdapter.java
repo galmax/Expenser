@@ -1,14 +1,15 @@
 package com.github.sinapple.expenser;
-
+import android.support.v7.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
+import com.github.sinapple.expenser.model.Wallet;
 import com.github.sinapple.expenser.model.TransactionCategory;
 import com.github.sinapple.expenser.model.MoneyTransaction;
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.List;
 public class CustomCatListAdapter extends RecyclerView.Adapter<CustomCatListAdapter.ViewHolder> implements RecyclerViewItemCallback.ItemTouchHelperAdapter, RecycleItemClickListener.OnItemClickListener{
     List<TransactionCategory> mCategories;
     Context mContext;
+
     public class ViewHolder extends RecyclerView.ViewHolder{
         public TextView mTitle;
         public TextView mDescription;
@@ -55,6 +57,7 @@ public class CustomCatListAdapter extends RecyclerView.Adapter<CustomCatListAdap
         final int p = position;
         final TransactionCategory x = mCategories.remove(position);
         final List<MoneyTransaction> mTransactions = MoneyTransaction.find(MoneyTransaction.class, "m_category = ?", x.getId().toString());
+        final Wallet w = Wallet.findById(Wallet.class, 1);
         notifyDataSetChanged();
         Snackbar.make(messageOutput, R.string.message_category_deleted, Snackbar.LENGTH_SHORT)
                 .setAction(R.string.cancel, new View.OnClickListener() {
@@ -71,7 +74,12 @@ public class CustomCatListAdapter extends RecyclerView.Adapter<CustomCatListAdap
                     public void onDismissed(Snackbar snackbar, int event) {
                         if (event != Snackbar.Callback.DISMISS_EVENT_ACTION) {
                             x.delete();
-                            for (MoneyTransaction m:mTransactions) {
+                            for (MoneyTransaction m : mTransactions) {
+                                //change balance
+                                if (m.isExpense()) {
+                                    w.setBalance(w.getBalance() + m.getAmount());
+                                } else w.setBalance(w.getBalance() - m.getAmount());
+                                w.save();
                                 m.delete();
                             }
                         }
