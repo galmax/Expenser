@@ -12,7 +12,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-
+    <!--name balance-->
     <TextView
         android:id="@+id/balance_view"
         android:layout_width="wrap_content"
@@ -21,8 +21,10 @@
         android:layout_marginRight="10dp"
         android:text="@string/balance"
         android:textColor="@android:color/white"
-        android:textSize="28sp" />
+        android:textSize="28sp"
+        android:layout_marginLeft="10dp" />
 
+    <!--field for view balance-->
     <TextView
         android:id="@+id/tv_balance"
         android:layout_width="wrap_content"
@@ -32,6 +34,7 @@
         android:textColor="@android:color/white"
         android:textSize="28sp" />
 
+    <!--field for view sign-->
     <TextView
         android:id="@+id/tv_sign"
         android:layout_width="wrap_content"

@@ -38,6 +38,7 @@
         android:layout_gravity="center_horizontal"
         android:orientation="horizontal">
 
+        <!--Transaction category-->
         <TextView
             android:id="@+id/textView_category"
             android:layout_width="wrap_content"
@@ -92,7 +93,7 @@
         android:layout_marginTop="7dp"
         android:orientation="horizontal">
 
-
+        <!--Transaction date-->
         <TextView
             android:id="@+id/textView__name_date"
             android:layout_width="wrap_content"
@@ -102,17 +103,19 @@
             android:text="@string/date_add_transaction"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
+        <!--Transaction date field-->
         <TextView
             android:id="@+id/tv_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:clickable="true"
-            android:textColor="@android:color/black"
-            android:textAppearance="?android:attr/textAppearanceMedium"/>
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@android:color/black" />
 
     </LinearLayout>
 
+    <!--Separator between  editText-->
     <View
         android:layout_width="fill_parent"
         android:layout_height="1dp"

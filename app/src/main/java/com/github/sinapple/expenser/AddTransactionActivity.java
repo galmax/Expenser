@@ -34,7 +34,7 @@ public class AddTransactionActivity extends AppCompatActivity {
     SimpleDateFormat sdf;
     //get object wallet
     Wallet wallet = Wallet.findById(Wallet.class, 1);
-    private boolean isEmpty=false;
+    private boolean isEmpty = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,34 +61,41 @@ public class AddTransactionActivity extends AppCompatActivity {
         Intent intentTransaction = getIntent();
         //get key of MainActivity.class
         whatDo = intentTransaction.getStringExtra("whatDo");
-        //get date object
+        //get format date
         sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
-
+        //get object that will change
         moneyTransactionForEdit = MoneyTransaction.findById(MoneyTransaction.class, intentTransaction.getLongExtra("Id", 1));
 
         switch (whatDo) {
-
+            //if add Expense
             case "addExpense":
                 setTitle(getString(R.string.add_expense));
+                //get expense`s categories
                 transactionCategories = TransactionCategory.find(TransactionCategory.class, "m_expense_category=?", "1");
                 isExpense = -1;
                 showSpinner(transactionCategories);
                 break;
+            //if edit Expense
             case "editExpense":
                 setTitle(getString(R.string.edit_expense));
+                //get expense`s categories
                 transactionCategories = TransactionCategory.find(TransactionCategory.class, "m_expense_category=?", "1");
                 isExpense = -1;
                 showSpinner(transactionCategories);
                 dataFillingDb();
                 break;
+            //if add Income
             case "addIncome":
                 setTitle(getString(R.string.add_income));
+                //get income`s categories
                 transactionCategories = TransactionCategory.find(TransactionCategory.class, "m_expense_category=?", "0");
                 isExpense = 1;
                 showSpinner(transactionCategories);
                 break;
+            //if edit Income
             case "editIncome":
                 setTitle(getString(R.string.edit_income));
+                //get income`s categories
                 transactionCategories = TransactionCategory.find(TransactionCategory.class, "m_expense_category=?", "0");
                 isExpense = 1;
                 showSpinner(transactionCategories);
@@ -114,18 +121,20 @@ public class AddTransactionActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.add_transaction) {
             isEmpty();
-            if(!isEmpty) {
+            //checking empty fields
+            if (!isEmpty) {
                 if (whatDo.equals("addExpense") || whatDo.equals("addIncome")) {
                     saveTransaction();
                 } else if (whatDo.equals("editExpense") || whatDo.equals("editIncome")) {
                     editTransaction();
                 }
-                //return ti MainActivity
+                //return to MainActivity
                 Intent intentToMain = new Intent(AddTransactionActivity.this, MainActivity.class);
                 startActivity(intentToMain);
             }
             return true;
         } else if (id == R.id.clean_transaction) {
+            //clean all fields
             et_nameTransaction.setText("");
             et_amountTransaction.setText("");
             et_descriptionTransaction.setText("");
@@ -136,15 +145,19 @@ public class AddTransactionActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    //fill all fields of the object
     private void dataFillingDb() {
         et_nameTransaction.setText(moneyTransactionForEdit.getName());
         et_amountTransaction.setText(String.valueOf(moneyTransactionForEdit.getAmount()));
-        wallet.setBalance(wallet.getBalance()-(Float.valueOf(et_amountTransaction.getText().toString()) * isExpense));
+        //add money to the balance
+        wallet.setBalance(wallet.getBalance() - (Float.valueOf(et_amountTransaction.getText().toString()) * isExpense));
+
         et_descriptionTransaction.setText(moneyTransactionForEdit.getDescription());
         tv_dateTransaction.setText(sdf.format(moneyTransactionForEdit.getDate()));
         spinner_CategoryTransaction.setSelection(getIndex(moneyTransactionForEdit.getCategory().getName()));
     }
 
+    //save the changed data in transaction
     private void editTransaction() {
         try {
             date = sdf.parse(tv_dateTransaction.getText().toString());
@@ -152,7 +165,8 @@ public class AddTransactionActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         transactionCategory = transactionCategories.get(spinner_CategoryTransaction.getSelectedItemPosition());
-        wallet.setBalance(wallet.getBalance()+(Float.valueOf(et_amountTransaction.getText().toString()) * isExpense));
+        //add money to the balance
+        wallet.setBalance(wallet.getBalance() + (Float.valueOf(et_amountTransaction.getText().toString()) * isExpense));
         wallet.save();
         moneyTransactionForEdit.setAmount((Float.valueOf(et_amountTransaction.getText().toString()) * isExpense));
         moneyTransactionForEdit.setName(et_nameTransaction.getText().toString());
@@ -162,13 +176,14 @@ public class AddTransactionActivity extends AppCompatActivity {
         moneyTransactionForEdit.save();
     }
 
+    //show categories in the spinner
     private void showSpinner(List<TransactionCategory> categories) {
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter categoryAdapter = new ArrayAdapter(this, R.layout.spinner, categories);
         spinner_CategoryTransaction.setAdapter(categoryAdapter);
-        // spinner_CategoryTransaction.setSelection(moneyTransaction.getCategory().getId().intValue());
     }
 
+    //save transaction
     private void saveTransaction() {
 
         try {
@@ -179,13 +194,14 @@ public class AddTransactionActivity extends AppCompatActivity {
 
         transactionCategory = transactionCategories.get(spinner_CategoryTransaction.getSelectedItemPosition());
         MoneyTransaction moneyTransaction = new MoneyTransaction(et_nameTransaction.getText().toString(), transactionCategory, wallet, et_descriptionTransaction.getText().toString(), (Float.valueOf(et_amountTransaction.getText().toString()) * isExpense), date);
-        //add amount money in wallet
-        wallet.setBalance(wallet.getBalance()+(Float.valueOf(et_amountTransaction.getText().toString()) * isExpense));
+        //add amount money to the balance
+        wallet.setBalance(wallet.getBalance() + (Float.valueOf(et_amountTransaction.getText().toString()) * isExpense));
         //save
         wallet.save();
         moneyTransaction.save();
     }
 
+    //get index for edit transaction
     private int getIndex(String category) {
         int index = 0;
         for (int i = 0; i < spinner_CategoryTransaction.getCount(); i++) {
@@ -196,17 +212,22 @@ public class AddTransactionActivity extends AppCompatActivity {
         return index;
     }
 
-    private void isEmpty(){
-        isEmpty=false;
-        if(et_nameTransaction.getText().toString().equals("")){
+    //check is empty fields
+    private void isEmpty() {
+        isEmpty = false;
+        if (et_nameTransaction.getText().toString().equals("")) {
             et_nameTransaction.setError(getString(R.string.enter_name));
-            isEmpty=true;
+            isEmpty = true;
         }
-        if(et_amountTransaction.getText().toString().equals("")){
+        if (et_amountTransaction.getText().toString().equals("")) {
             et_amountTransaction.setError(getString(R.string.enter_amount));
-            isEmpty=true;
+            isEmpty = true;
         }
-        if((tv_dateTransaction.getText().toString().equals("")&&!isEmpty)){
+       if (Float.parseFloat(et_amountTransaction.getText().toString()) == 0) {
+            et_amountTransaction.setError(getString(R.string.if_zero_amount));
+            isEmpty = true;
+        }
+        if ((tv_dateTransaction.getText().toString().equals("") && !isEmpty)) {
             String sDate = sdf.format(new Date());
             tv_dateTransaction.setText(sDate);
         }
