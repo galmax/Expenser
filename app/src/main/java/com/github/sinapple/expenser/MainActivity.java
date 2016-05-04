@@ -57,13 +57,33 @@ public class MainActivity extends AppCompatActivity
         });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.addDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                TextView tv_balance = (TextView) findViewById(R.id.tv_balance);
+                Wallet wallet = Wallet.findById(Wallet.class, 1);
+                if(slideOffset != 0) tv_balance.setText(Float.toString(wallet.getBalance()));
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+            }
+        });
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
+        initializeDB();
         //write balance in nav_header_main
         View header = navigationView.getHeaderView(0);
         TextView tv_balance = (TextView) header.findViewById(R.id.tv_balance);
@@ -72,11 +92,10 @@ public class MainActivity extends AppCompatActivity
         tv_balance.setText(Float.toString(wallet.getBalance()));
         tv_sign.setText(wallet.getCurrency().getSign());
 
-        //addTestData();
         //Initialize RecyclerList
         RecyclerView list = (RecyclerView) findViewById(R.id.transaction_list);
         list.setLayoutManager(new LinearLayoutManager(this));
-        CustomRListAdapter adapter = new CustomRListAdapter(this, MoneyTransaction.find(MoneyTransaction.class, "m_amount < ?", "0"));
+        CustomRListAdapter adapter = new CustomRListAdapter(MoneyTransaction.find(MoneyTransaction.class, "m_amount < ?", "0"));
         RecycleItemClickListener clickListener = new RecycleItemClickListener(this.getApplicationContext(), adapter);
         list.setAdapter(adapter);
         list.addOnItemTouchListener(clickListener);
@@ -200,4 +219,5 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
 }
