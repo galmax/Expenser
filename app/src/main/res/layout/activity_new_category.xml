@@ -11,19 +11,6 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.github.sinapple.expenser.NewCategoryActivity">
 
-    <TextView
-        android:id="@+id/new_category_name_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="7dp"
-        android:layout_marginLeft="@dimen/activity_element_marginLeft"
-        android:layout_marginTop="7dp"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Name" />
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="@color/list_separator_color" />
     <!--Category name-->
     <EditText
         android:id="@+id/new_category_name"

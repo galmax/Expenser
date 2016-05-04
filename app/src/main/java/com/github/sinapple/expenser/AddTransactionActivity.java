@@ -223,7 +223,7 @@ public class AddTransactionActivity extends AppCompatActivity {
             et_amountTransaction.setError(getString(R.string.enter_amount));
             isEmpty = true;
         }
-       if (Float.parseFloat(et_amountTransaction.getText().toString()) == 0) {
+       if (!et_amountTransaction.getText().toString().equals("")&& Float.parseFloat(et_amountTransaction.getText().toString()) == 0) {
             et_amountTransaction.setError(getString(R.string.if_zero_amount));
             isEmpty = true;
         }
