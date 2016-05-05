@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/statistic_activity_backColor"
+    android:gravity="center">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:background="@color/statistic_list_backColor"
+        android:padding="@dimen/statistic_datePanel_padding"
+        android:layout_marginRight="@dimen/statistic_activity_elements_margin"
+        android:layout_marginLeft="@dimen/statistic_activity_elements_margin">
+
+        <ImageButton
+            android:id="@+id/statistic_panel_option_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_menu_expenses" />
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/divider_color"
+            android:layout_marginLeft="@dimen/activity_element_margin"
+            android:layout_marginRight="@dimen/activity_element_margin"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="From"/>
+        <Button
+            android:id="@+id/statistic_panel_fromDateButton"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:textSize="5pt"
+            android:text="date"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="to"/>
+        <Button
+            android:id="@+id/statistic_panel_toDateButton"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:textSize="5pt"
+            android:text="date"/>
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/divider_color"
+            android:layout_marginLeft="@dimen/activity_element_margin"
+            android:layout_marginRight="@dimen/activity_element_margin"/>
+        <ImageButton
+            android:id="@+id/statistic_panel_cancel_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_clear_black_24dp"/>
+
+
+    </LinearLayout>
+
+    <com.github.mikephil.charting.charts.PieChart
+        android:id="@+id/statistic_pieChart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/statistic_activity_elements_margin"
+        android:layout_weight="0.5">
+    </com.github.mikephil.charting.charts.PieChart>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:background="@color/statistic_list_backColor"
+        android:layout_margin="@dimen/statistic_activity_elements_margin"
+        android:padding="@dimen/statistic_list_padding"
+        android:layout_weight="0.5">
+
+        <ListView
+            android:id="@+id/statistic_category_listView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </ListView>
+    </LinearLayout>
+</LinearLayout>

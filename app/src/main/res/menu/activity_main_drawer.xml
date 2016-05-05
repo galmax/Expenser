@@ -14,6 +14,10 @@
             android:id="@+id/nav_categories"
             android:icon="@drawable/ic_menu_categories"
             android:title="@string/nav_categories" />
+        <item
+            android:id="@+id/nav_statistic"
+            android:icon="@drawable/ic_pie_chart_black_24dp"
+            android:title="@string/nav_statistic"/>
 
     </group>
 

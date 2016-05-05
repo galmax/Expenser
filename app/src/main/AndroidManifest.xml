@@ -42,6 +42,9 @@
             android:name=".NewCategoryActivity"
             android:parentActivityName=".CategoryActivity">
         </activity>
+        <activity
+            android:name=".statistic.StatisticActivity"
+            android:parentActivityName=".MainActivity" />
     </application>
 
 </manifest>

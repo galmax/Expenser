@@ -26,6 +26,7 @@
     <string name="balance">Balance:</string>
     <string name="null_expense">First, add the category of expense</string>
     <string name="set_date_picker">Set</string>
+    <string name="nav_statistic">Statistic</string>
     <string name="set_title_for_date_picker">Choose date</string>
     <string-array name="category_type">
         <item>Income</item>
