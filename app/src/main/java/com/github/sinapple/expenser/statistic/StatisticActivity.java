@@ -1,10 +1,18 @@
 package com.github.sinapple.expenser.statistic;
 
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
+import android.text.style.StyleSpan;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.github.mikephil.charting.charts.PieChart;
@@ -27,14 +35,15 @@ import java.util.List;
 public class StatisticActivity extends AppCompatActivity {
     private List<StatisticItem> statisticList;
     private List<Integer> colors;
+    private List<TransactionCategory> allCategories;
+    private List<MoneyTransaction> allMoneyTransaction;
     private boolean isExpenseStatistic;
-    List<TransactionCategory> allCategories;
-    List<MoneyTransaction> allMoneyTransaction;
-
+    private StatisticAdapter adapter;
     private Date fromDate;
     private Date toDate;
-    private StatisticAdapter adapter;
-    //
+
+
+    private LinearLayout statisticLinearLayout;
     private PieChart pieChart;
     private ListView categoriesListView;
     private ImageButton cancelButton;
@@ -47,6 +56,14 @@ public class StatisticActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_statistic);
 
+        statisticLinearLayout = (LinearLayout) findViewById(R.id.statistic_linearLayout);
+        pieChart = (PieChart) findViewById(R.id.statistic_pieChart);
+        categoriesListView = (ListView) findViewById(R.id.statistic_category_listView);
+        cancelButton = (ImageButton) findViewById(R.id.statistic_panel_cancel_button);
+        optionButton = (ImageButton) findViewById(R.id.statistic_panel_option_button);
+        fromDateButton = (Button) findViewById(R.id.statistic_panel_fromDateButton);
+        toDateButton = (Button) findViewById(R.id.statistic_panel_toDateButton);
+
         // initialize fields
         fromDate = null;
         toDate = null;
@@ -55,12 +72,7 @@ public class StatisticActivity extends AppCompatActivity {
         allMoneyTransaction = MoneyTransaction.listAll(MoneyTransaction.class);
         statisticList = new ArrayList<>();
 
-        pieChart = (PieChart) findViewById(R.id.statistic_pieChart);
-        categoriesListView = (ListView) findViewById(R.id.statistic_category_listView);
-        cancelButton = (ImageButton) findViewById(R.id.statistic_panel_cancel_button);
-        optionButton = (ImageButton) findViewById(R.id.statistic_panel_option_button);
-        fromDateButton = (Button) findViewById(R.id.statistic_panel_fromDateButton);
-        toDateButton = (Button) findViewById(R.id.statistic_panel_toDateButton);
+        ;
 
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,23 +85,29 @@ public class StatisticActivity extends AppCompatActivity {
         optionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isExpenseStatistic){
+                if (isExpenseStatistic) {
                     isExpenseStatistic = false;
                     optionButton.setImageResource(R.drawable.ic_menu_incomes);
                     refreshViews();
+                    Snackbar.make(v, R.string.statisticCategoryOption1, Snackbar.LENGTH_SHORT).show();
+                    pieChart.setCenterText(generateCenterSpannableText("Income\nStatistic"));
 
                 } else {
                     isExpenseStatistic = true;
                     optionButton.setImageResource(R.drawable.ic_menu_expenses);
                     refreshViews();
+                    Snackbar.make(v, R.string.statisticCategoryOption2, Snackbar.LENGTH_SHORT).show();
+                    pieChart.setCenterText(generateCenterSpannableText("Expense\nStatistic"));
                 }
             }
         });
+
         
 
 
         initColorsList();
         initStatisticList();
+        pieChart.setCenterText(generateCenterSpannableText("Expense\nStatistic"));
         initPieChart();
 
         adapter = new StatisticAdapter(this, R.layout.statistic_item, statisticList);
@@ -187,6 +205,8 @@ public class StatisticActivity extends AppCompatActivity {
                 statisticList.add(item);
             }
         }
+        if(statisticList.size() == 0)
+            statisticLinearLayout.setVisibility(View.INVISIBLE);
     }
 
     private float getAmountForCategoryToDate(TransactionCategory transactionCategory) {
@@ -251,6 +271,12 @@ public class StatisticActivity extends AppCompatActivity {
         for (int c : ColorTemplate.JOYFUL_COLORS)
             colors.add(c);
         colors.add(ColorTemplate.getHoloBlue());
+    }
+
+    private SpannableString generateCenterSpannableText(String text) {
+
+        SpannableString s = new SpannableString(text);
+        return s;
     }
 }
 
