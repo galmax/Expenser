@@ -23,6 +23,7 @@ import java.util.Locale;
 public class CustomRListAdapter extends RecyclerView.Adapter<CustomRListAdapter.ViewHolder> implements RecyclerViewItemCallback.ItemTouchHelperAdapter, RecycleItemClickListener.OnItemClickListener{
     private List<MoneyTransaction> mTransactions;
     private float mCurrentBalance;
+    private Wallet mWallet;
 
     public float getCurrentBalance() {
         return mCurrentBalance;
@@ -50,9 +51,10 @@ public class CustomRListAdapter extends RecyclerView.Adapter<CustomRListAdapter.
     }
 
     //Suitable constructor
-    public CustomRListAdapter(List<MoneyTransaction> transactions) {
+    public CustomRListAdapter(List<MoneyTransaction> transactions, Wallet wallet) {
         mTransactions = transactions;
-        mCurrentBalance = Wallet.getCurrentWallet().getBalance();
+        mWallet = wallet;
+        mCurrentBalance = wallet.getBalance();
     }
 
     //Create new views
@@ -87,8 +89,7 @@ public class CustomRListAdapter extends RecyclerView.Adapter<CustomRListAdapter.
     public void onItemDismiss(View messageOutput, int position){
         final int p = position;
         final MoneyTransaction m = mTransactions.remove(position);
-        final Wallet w =  Wallet.findById(Wallet.class, m.getWallet().getId());
-        mCurrentBalance = w.getBalance() - m.getRawAmount();
+        mCurrentBalance -= m.getRawAmount();
         notifyItemRemoved(position);
 
         Snackbar.make(messageOutput, R.string.message_transaction_deleted, Snackbar.LENGTH_SHORT)
@@ -105,8 +106,8 @@ public class CustomRListAdapter extends RecyclerView.Adapter<CustomRListAdapter.
                     @Override
                     public void onDismissed(Snackbar snackbar, int event) {
                         if (event != Snackbar.Callback.DISMISS_EVENT_ACTION) {
-                            w.setBalance(mCurrentBalance);
-                            w.save();
+                            mWallet.setBalance(mCurrentBalance);
+                            mWallet.save();
                             m.delete();
                         }
                     }
@@ -124,8 +125,4 @@ public class CustomRListAdapter extends RecyclerView.Adapter<CustomRListAdapter.
         editIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(editIntent);
     }
-
-
-
-
 }

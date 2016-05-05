@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity
                 List<TransactionCategory> transactionCategories = TransactionCategory.find(TransactionCategory.class, "m_expense_category=?", "1");
                 if (transactionCategories.size() != 0) {
                     //send key to AddTransactionActivity.class
-                    intentToTransaction.putExtra("whatDo", "addExpense");
+                    intentToTransaction.putExtra("whatDo", mIsExpenseActivity?"addExpense":"addIncome");
                     intentToTransaction.putExtra("Id", 1);
                     startActivity(intentToTransaction);
                 } else {
@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity
         mTransactionList = MoneyTransaction.findTransactionByDate(mFirstDate, mIsExpenseActivity);
         RecyclerView list = (RecyclerView) findViewById(R.id.transaction_list);
         list.setLayoutManager(new LinearLayoutManager(this));
-        recyclerAdapter = new CustomRListAdapter(mTransactionList);
+        recyclerAdapter = new CustomRListAdapter(mTransactionList, Wallet.getCurrentWallet());
         list.setAdapter(recyclerAdapter);
 
         //Set click listener
