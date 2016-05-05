@@ -7,6 +7,7 @@ import com.orm.SugarRecord;
  * Every transaction has to be related with some wallet.
  */
 public class Wallet extends SugarRecord {
+    private static String defaultWalletName = "DefaultWallet";
     private String mName;
     private String mDescription;
     private float mBalance;
@@ -60,6 +61,15 @@ public class Wallet extends SugarRecord {
         mName = name;
         mBalance = balance;
         mCurrency = currency;
+    }
+
+    public static Wallet getCurrentWallet(){
+        Wallet firstRecord = Wallet.first(Wallet.class);
+        if (firstRecord == null) {
+            firstRecord = new Wallet(defaultWalletName, 0f, Currency.getDefaultCurrency());
+            firstRecord.save();
+        }
+        return firstRecord;
     }
 
     @Override

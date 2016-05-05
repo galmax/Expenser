@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--design for spinner-->
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:padding="10dp"
-    android:textSize="@dimen/text_size_activity_add_transaction"
-    android:textColor="#000000"
-    android:spinnerMode="dialog" />
+    android:padding="7dp"
+    android:spinnerMode="dialog"
+    android:textAppearance="?android:attr/textAppearanceMedium"
+    android:textColor="#000000" />

@@ -30,25 +30,28 @@ public class DatePicker extends DialogFragment implements DatePickerDialog.OnDat
         // create DatePickerDialog and return
         Dialog picker = new DatePickerDialog(getActivity(), this,
                 year, month, day);
-        picker.setTitle("Choose date");
+        picker.setTitle(R.string.set_title_for_date_picker);
         return picker;
     }
 
+    //start date picker
     @Override
     public void onStart() {
         super.onStart();
         // add text to button
         Button nButton = ((AlertDialog) getDialog())
                 .getButton(DialogInterface.BUTTON_POSITIVE);
-        nButton.setText("Set");
+        nButton.setText(R.string.set_date_picker);
     }
 
     @Override
     public void onDateSet(android.widget.DatePicker view, int year, int month, int day) {
+        //initialize textView for date
         TextView tv = (TextView) getActivity().findViewById(R.id.tv_date);
+        //set format date
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
         String sDate = sdf.format(new Date(System.currentTimeMillis()));
-        tv.setText(day + "." + month + "." + year + " " + sDate);
-
+        //set date on textView
+        tv.setText(day + "." + (month+1) + "." + year + " " + sDate);
     }
 }

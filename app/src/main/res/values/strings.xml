@@ -10,7 +10,24 @@
     <string name="nav_categories">Categories</string>
     <string name="cancel">Cancel</string>
     <string name="message_transaction_deleted">Transaction has been removed</string>
+    <string name="message_category_deleted">Category and all related entries have been removed</string>
+    <string name="name_add_transaction">Name...</string>
+    <string name="category_add_transaction">Category:</string>
+    <string name="amount_add_transaction">Amount...</string>
+    <string name="date_add_transaction">Date:</string>
+    <string name="description_add_transaction">Enter description...</string>
+    <string name="add_expense">Add Expense</string>
+    <string name="edit_expense">Edit Expense</string>
+    <string name="add_income">Add Income</string>
+    <string name="edit_income">Edit Income</string>
+    <string name="enter_name">Enter Name!</string>
+    <string name="enter_amount">Enter Amount!</string>
+    <string name="if_zero_amount">Amount shouldn`t be zero!</string>
+    <string name="balance">Balance:</string>
+    <string name="null_expense">First, add the category of expense</string>
+    <string name="set_date_picker">Set</string>
     <string name="nav_statistic">Statistic</string>
+    <string name="set_title_for_date_picker">Choose date</string>
     <string-array name="category_type">
         <item>Income</item>
         <item>Expense</item>

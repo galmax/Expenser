@@ -8,12 +8,35 @@
     tools:context="com.github.sinapple.expenser.MainActivity"
     tools:showIn="@layout/app_bar_main">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/date"
+        android:paddingTop="@dimen/date_horizontal_margin"
+        android:paddingBottom="@dimen/date_horizontal_margin"
+        android:background="@color/activity_background_color"
+        android:text="03 May 2016"
+        android:textSize="@dimen/date_text_size"
+        android:textAlignment="center"
+        android:layout_alignParentTop="true"
+        android:clickable="true"
+        android:onClick="onDateBoxClick"
+        android:layout_centerHorizontal="true"/>
+
+    <View
+        style="@style/Separator"
+        android:id="@+id/separator"
+        android:layout_below="@id/date"
+        />
+
     <android.support.v7.widget.RecyclerView
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:id="@+id/transaction_list">
+        android:id="@+id/transaction_list"
+        android:layout_below="@id/separator"
+        >
 
     </android.support.v7.widget.RecyclerView>
-
 </RelativeLayout>

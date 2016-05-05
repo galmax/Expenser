@@ -5,13 +5,13 @@
     <item
         android:id="@+id/add_transaction"
         android:icon="@drawable/ic_menu_add"
-        android:orderInCategory="1"
+        android:orderInCategory="2"
         android:title=""
         app:showAsAction="always" />
     <item
         android:id="@+id/clean_transaction"
         android:icon="@drawable/ic_menu_clear"
-        android:orderInCategory="2"
-        android:title="f"
+        android:orderInCategory="1"
+        android:title=""
         app:showAsAction="always" />
 </menu>

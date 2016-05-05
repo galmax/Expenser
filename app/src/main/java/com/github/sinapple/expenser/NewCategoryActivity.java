@@ -21,24 +21,36 @@ import com.github.sinapple.expenser.model.TransactionCategory;
 
 public class NewCategoryActivity extends AppCompatActivity {
     boolean EDIT_CATEGORY;
+    long id;
     EditText new_category_name,new_category_description;
     Spinner new_category_type;
     LinearLayout category_elements;
+    View sepLine;
+    TransactionCategory editedTransactionCategory;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_category);
-        EDIT_CATEGORY=getIntent().getExtras().getBoolean("action");
+        Intent intent=getIntent();
+        EDIT_CATEGORY=intent.getExtras().getBoolean("edit_category");
         //initialize views
         new_category_name=(EditText)findViewById(R.id.new_category_name);
         new_category_description=(EditText)findViewById(R.id.new_category_description);
         category_elements=(LinearLayout)findViewById(R.id.category_elements);
         new_category_type=(Spinner)findViewById(R.id.new_category_type);
+        sepLine=(View)findViewById(R.id.sepLine);
 
         if(EDIT_CATEGORY) {
             setTitle("Edit Category");
-            //it's impossible to change category type once it has been created, so we hide the spinner and it's surrounding elements
+            //it's impossible to change category type once it has been created, so we hide the spinner and its surrounding elements
             category_elements.setVisibility(View.GONE);
+            sepLine.setVisibility(View.GONE);
+            //get edited category using its id
+            id=intent.getExtras().getLong("id");
+            editedTransactionCategory = TransactionCategory.findById(TransactionCategory.class, id);
+            //fill editTexts with data
+            new_category_name.setText(editedTransactionCategory.getName());
+            new_category_description.setText(editedTransactionCategory.getDescription());
         } else {
             setTitle("Add Category");
             //set up spinner for choosing category type
@@ -60,14 +72,16 @@ public class NewCategoryActivity extends AppCompatActivity {
         int id = item.getItemId();
         //noinspection SimplifiableIfStatement
         if (id == R.id.submit_category_data) {
-            if (EDIT_CATEGORY) {
-                editCategory();
-            } else {
-                saveCategory();
+            if(isInputValid()) {
+                if (EDIT_CATEGORY) {
+                    editCategory();
+                } else {
+                    saveCategory();
+                }
+                //return to CategoryActivity
+                Intent in = new Intent(NewCategoryActivity.this, CategoryActivity.class);
+                startActivity(in);
             }
-            //return to CategoryActivity
-            Intent in = new Intent(NewCategoryActivity.this, CategoryActivity.class);
-            startActivity(in);
             return true;
         } else if (id == R.id.clear_category_data) {
             //set views' values to default
@@ -78,14 +92,34 @@ public class NewCategoryActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-    private void editCategory(){};
+    private void editCategory(){
+            editedTransactionCategory.setName(new_category_name.getText().toString());
+            editedTransactionCategory.setDescription(new_category_description.getText().toString());
+            editedTransactionCategory.save();
+
+    }
     private void saveCategory(){
-        //get chosen category type
-        String new_category_type_position= String.valueOf(new_category_type.getSelectedItem());
-        boolean expenseCategory;
-        if(new_category_type_position.equals("Expense")) expenseCategory=true; else expenseCategory=false;
-        //create new category and save it
-        TransactionCategory transactionCategory = new TransactionCategory(new_category_name.getText().toString(),new_category_description.getText().toString(),expenseCategory);
-        transactionCategory.save();
-    };
+            //get chosen category type
+            String new_category_type_position = String.valueOf(new_category_type.getSelectedItem());
+            boolean expenseCategory;
+            if (new_category_type_position.equals("Expense")) expenseCategory = true;
+            else expenseCategory = false;
+            //create new category and save it
+            TransactionCategory transactionCategory = new TransactionCategory(new_category_name.getText().toString(), new_category_description.getText().toString(), expenseCategory);
+            transactionCategory.save();
+
+    }
+    private boolean isInputValid(){
+        // check if all inputs are filled out
+        if(isEmpty(new_category_name) || isEmpty(new_category_description)) {
+            Snackbar.make(findViewById(R.id.new_category_layout), "All fields must be filled out!", Snackbar.LENGTH_LONG).show();
+            return false;
+        } else {
+            return true;
+        }
+    }
+    //check if EditText is empty
+    private boolean isEmpty(EditText t){
+        return t.getText().toString().trim().length()==0;
+    }
 }
