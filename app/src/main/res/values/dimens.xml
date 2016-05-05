@@ -16,7 +16,6 @@
     <dimen name="date_horizontal_margin">5dp</dimen>
     <dimen name="statistic_datePanel_padding">5dp</dimen>
     <dimen name="statistic_margin_between_elements">3dp</dimen>
-    dimen name="date_horizontal_margin">5dp</dimen>
     <dimen name="date_text_size">20sp</dimen>
     <dimen name="statistic_list_padding">10dp</dimen>
 </resources>
