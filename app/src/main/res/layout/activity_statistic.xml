@@ -20,7 +20,7 @@
             android:id="@+id/statistic_panel_option_button"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:src="@drawable/ic_menu_incomes" />
+            android:src="@drawable/ic_menu_expenses" />
         <View
             android:layout_width="1dp"
             android:layout_height="match_parent"

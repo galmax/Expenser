@@ -19,6 +19,7 @@ public class StatisticAdapter extends ArrayAdapter {
     LayoutInflater mInflater;
     List<StatisticItem> statisticList;
 
+    //Constructor
     public StatisticAdapter(Context context, int resource, List<StatisticItem> statisticList) {
         super(context, resource, statisticList);
         this.context = context;
@@ -26,6 +27,7 @@ public class StatisticAdapter extends ArrayAdapter {
         this.statisticList = statisticList;
     }
 
+    //Put specific data in the content of a view
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
@@ -42,11 +44,9 @@ public class StatisticAdapter extends ArrayAdapter {
 
             holder = (ViewHolder)row.getTag();
         }
-
         StatisticItem item = statisticList.get(position);
-
         holder.categoryName.setText(item.getCategory().getName());
-        holder.categoryAmount.setText(String.valueOf(item.getAmount()));
+        holder.categoryAmount.setText(String.valueOf(item.getAmount()) + " \u20ac");
         holder.categoryName.setTextColor(item.getColor());
         holder.categoryAmount.setTextColor(item.getColor());
 
