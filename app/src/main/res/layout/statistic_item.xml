@@ -23,25 +23,16 @@
             android:id="@+id/statistic_item_amount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@+id/statistic_item_percent"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@android:color/black"
             android:paddingRight="@dimen/statistic_activity_elements_margin"
-            android:textAppearance="?android:attr/textAppearanceMedium"
             android:maxLines="@integer/recycler_view_max_lines"
             android:ellipsize="end"
             android:text="200$"/>
 
-        <TextView
-            android:id="@+id/statistic_item_percent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
 
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:maxLines="@integer/recycler_view_max_lines"
-            android:ellipsize="end"
-            android:text="20%" />
 
 
     </RelativeLayout>
