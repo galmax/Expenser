@@ -112,10 +112,5 @@
     </RelativeLayout>
 
     <!--Separator between list items-->
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:layout_alignParentBottom="true"
-        android:background = "@color/list_separator_color"
-        />
+    <View style="@style/Separator"/>
 </LinearLayout>

@@ -13,7 +13,7 @@ public class Currency extends SugarRecord {
     public Currency() {
     }
 
-    //public final static Currency EUR = new Currency("Euro", "EUR", '\u20AC');
+    private static long defaultCurrencyId;
 
     //Getters and setters
     public String getFullName() {
@@ -56,5 +56,14 @@ public class Currency extends SugarRecord {
     @Override
     public String toString() {
         return mSign == null ? mShortName : mSign;
+    }
+
+    public static Currency getDefaultCurrency(){
+        Currency firstRecord = Currency.first(Currency.class);
+        if (firstRecord == null){
+            firstRecord = new Currency("Euro", "EUR", "\u20AC");
+            firstRecord.save();
+        }
+        return firstRecord;
     }
 }

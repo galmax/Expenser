@@ -52,7 +52,6 @@ public class DatePicker extends DialogFragment implements DatePickerDialog.OnDat
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
         String sDate = sdf.format(new Date(System.currentTimeMillis()));
         //set date on textView
-        tv.setText(day + "." + month + "." + year + " " + sDate);
-
+        tv.setText(day + "." + (month+1) + "." + year + " " + sDate);
     }
 }

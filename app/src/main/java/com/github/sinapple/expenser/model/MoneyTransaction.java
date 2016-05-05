@@ -2,7 +2,9 @@ package com.github.sinapple.expenser.model;
 
 import com.orm.SugarRecord;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 
 /*
@@ -44,6 +46,8 @@ public class MoneyTransaction extends SugarRecord {
     public float getAmount() {
         return Math.abs(mAmount);
     }
+
+    public float getRawAmount(){ return mAmount; }
 
     public void setAmount(float mAmount) {
         this.mAmount = mAmount;
@@ -112,5 +116,32 @@ public class MoneyTransaction extends SugarRecord {
     @Override
     public String toString() {
         return "mName: " + mName + " " + "mCategory: " + mCategory.getName() + " " + "mWallet: " + mWallet.getBalance() + " " + "mDescription: " + mDescription + " " + "mAmount: " + mAmount + " " + " mDate: " + mDate + "\n";
+    }
+
+    public static List<MoneyTransaction> findTransactionByDate(Calendar date, boolean lookForExpenses){
+        setTimeToZero(date);
+        Calendar intervalEnd = Calendar.getInstance();
+        intervalEnd.setTimeInMillis(date.getTimeInMillis());
+        return findTransactionByDate(date, intervalEnd, lookForExpenses);
+    }
+
+    //Returns all transactions that was created in specified date interval including scope
+    public static List<MoneyTransaction> findTransactionByDate(Calendar first, Calendar second, boolean lookForExpenses){
+        if (first.getTimeInMillis() > second.getTimeInMillis()) return null;
+        second.add(Calendar.DAY_OF_MONTH, 1);
+        return findTransactionByTime(first, second, lookForExpenses);
+    }
+
+    public static List<MoneyTransaction> findTransactionByTime(Calendar first, Calendar second, boolean lookForExpenses){
+        if (first.getTimeInMillis() > second.getTimeInMillis()) return null;
+        return MoneyTransaction.find(MoneyTransaction.class, "m_amount" + (lookForExpenses ? "<" : ">") + "? and m_wallet = ? and m_date > ? and m_date < ?", "0", Long.toString(Wallet.getCurrentWallet().getId()), Long.toString(first.getTimeInMillis()), Long.toString(second.getTimeInMillis()));
+    }
+
+    //Set time to zero for attaching all day to interval
+    private static void setTimeToZero(Calendar date){
+        date.set(Calendar.HOUR_OF_DAY, 0);
+        date.set(Calendar.MINUTE, 0);
+        date.set(Calendar.SECOND, 0);
+        date.set(Calendar.MILLISECOND, 0);
     }
 }

@@ -1,5 +1,6 @@
 package com.github.sinapple.expenser;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -14,20 +15,36 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.text.format.DateUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.DatePicker;
 import android.widget.TextView;
 
-import com.github.sinapple.expenser.model.Currency;
 import com.github.sinapple.expenser.model.MoneyTransaction;
 import com.github.sinapple.expenser.model.TransactionCategory;
 import com.github.sinapple.expenser.model.Wallet;
 
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, DatePickerDialog.OnDateSetListener
+{
+    public static final String IS_EXPENSE_LIST = "com.github.sinapple.expenser.IS_EXPENSE_LIST";
+
+    private List<MoneyTransaction> mTransactionList;
+    private CustomRListAdapter recyclerAdapter;
+    private Wallet mWallet;
+    private Calendar mFirstDate;
+    private Calendar mSecondDate;
+    private boolean mIsExpenseActivity;
+
+    private FloatingActionButton fab;
+    private TextView tv_balance;
+    private TextView dateField;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +54,7 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -57,24 +74,10 @@ public class MainActivity extends AppCompatActivity
         });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.addDrawerListener(new DrawerLayout.DrawerListener() {
-            @Override
-            public void onDrawerSlide(View drawerView, float slideOffset) {
-                TextView tv_balance = (TextView) findViewById(R.id.tv_balance);
-                Wallet wallet = Wallet.findById(Wallet.class, 1);
-                if(slideOffset != 0) tv_balance.setText(Float.toString(wallet.getBalance()));
-            }
-
+        drawer.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
             @Override
             public void onDrawerOpened(View drawerView) {
-            }
-
-            @Override
-            public void onDrawerClosed(View drawerView) {
-            }
-
-            @Override
-            public void onDrawerStateChanged(int newState) {
+                tv_balance.setText(Float.toString(recyclerAdapter.getCurrentBalance()));
             }
         });
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -83,34 +86,45 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        //Receive data have been sent to this activity and change UI
+        mIsExpenseActivity = getIntent().getBooleanExtra(IS_EXPENSE_LIST, true);
+
+
         //initializeDB();
-        //write balance in nav_header_main
+        //Write balance in nav_header_main
         View header = navigationView.getHeaderView(0);
-        TextView tv_balance = (TextView) header.findViewById(R.id.tv_balance);
+        tv_balance = (TextView) header.findViewById(R.id.tv_balance);
         TextView tv_sign = (TextView) header.findViewById(R.id.tv_sign);
-        Wallet wallet = Wallet.findById(Wallet.class, 1);
-        tv_balance.setText(Float.toString(wallet.getBalance()));
-        tv_sign.setText(wallet.getCurrency().getSign());
+        mWallet = Wallet.getCurrentWallet();
+        tv_balance.setText(Float.toString(mWallet.getBalance()));
+        tv_sign.setText(mWallet.getCurrency().getSign());
+
+        //Initialize date
+        mFirstDate = Calendar.getInstance(Locale.getDefault());
+        dateField = (TextView)findViewById(R.id.date);
+        setDateFieldValue();
 
         //Initialize RecyclerList
+        mTransactionList = MoneyTransaction.findTransactionByDate(mFirstDate, mIsExpenseActivity);
         RecyclerView list = (RecyclerView) findViewById(R.id.transaction_list);
         list.setLayoutManager(new LinearLayoutManager(this));
-        CustomRListAdapter adapter = new CustomRListAdapter(MoneyTransaction.find(MoneyTransaction.class, "m_amount < ?", "0"));
-        RecycleItemClickListener clickListener = new RecycleItemClickListener(this.getApplicationContext(), adapter);
-        list.setAdapter(adapter);
+        recyclerAdapter = new CustomRListAdapter(mTransactionList);
+        list.setAdapter(recyclerAdapter);
+
+        //Set click listener
+        RecycleItemClickListener clickListener = new RecycleItemClickListener(this.getApplicationContext(), recyclerAdapter);
         list.addOnItemTouchListener(clickListener);
-        ItemTouchHelper.Callback callback = new RecyclerViewItemCallback(adapter, ContextCompat.getColor(this, R.color.colorAccent));
+
+        //Set swipe listener
+        ItemTouchHelper.Callback callback = new RecyclerViewItemCallback(recyclerAdapter, ContextCompat.getColor(this, R.color.colorAccent));
         ItemTouchHelper helper = new ItemTouchHelper(callback);
         helper.attachToRecyclerView(list);
     }
 
     private static void initializeDB() {
-        //create Currency
-        Currency mainCurrency = new Currency("Euro", "EUR", "\u20ac");
-        mainCurrency.save();
 
-        Wallet mainWallet = new Wallet("DefaultWallet", null, 0, mainCurrency);
-        mainWallet.save();
+        Wallet mainWallet = Wallet.getCurrentWallet();
 
         //create TransactionCategory
         TransactionCategory transactionCategoryFood = new TransactionCategory("Food", "This category about food", true);
@@ -146,14 +160,10 @@ public class MainActivity extends AppCompatActivity
         TransactionCategory transactionCategoryFood;
         TransactionCategory transactionCategorySalary;
         TransactionCategory transactionCategoryGym;
-        try {
-            mainWallet = Wallet.listAll(Wallet.class).get(0);
-            transactionCategoryFood = TransactionCategory.listAll(TransactionCategory.class).get(0);
-            transactionCategorySalary = TransactionCategory.listAll(TransactionCategory.class).get(2);
-            transactionCategoryGym = TransactionCategory.listAll(TransactionCategory.class).get(4);
-        } catch (Exception x) {
-            return;
-        }
+        mainWallet = Wallet.getCurrentWallet();
+        transactionCategoryFood = TransactionCategory.listAll(TransactionCategory.class).get(0);
+        transactionCategorySalary = TransactionCategory.listAll(TransactionCategory.class).get(2);
+        transactionCategoryGym = TransactionCategory.listAll(TransactionCategory.class).get(4);
 
         //create Transactions
         MoneyTransaction moneyTransaction1 = new MoneyTransaction("Bought bread", transactionCategoryFood, mainWallet, "I bought some bread", -5);
@@ -166,6 +176,34 @@ public class MainActivity extends AppCompatActivity
         moneyTransaction4.save();
         MoneyTransaction moneyTransaction5 = new MoneyTransaction("Sport nutrition", transactionCategoryGym, mainWallet, null, -150);
         moneyTransaction5.save();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putBoolean(IS_EXPENSE_LIST, mIsExpenseActivity);
+        super.onSaveInstanceState(outState);
+    }
+
+    public void setDateFieldValue(){
+        dateField.setText(DateUtils.formatDateTime(getApplicationContext(), mFirstDate.getTimeInMillis(), DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR));
+    }
+
+    public void onDateBoxClick(View view) {
+        new DatePickerDialog(this, this, mFirstDate.get(Calendar.YEAR), mFirstDate.get(Calendar.MONTH), mFirstDate.get(Calendar.DAY_OF_MONTH)).show();
+    }
+
+    @Override
+    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+        if (mFirstDate.get(Calendar.YEAR) != year || mFirstDate.get(Calendar.MONTH) != monthOfYear || mFirstDate.get(Calendar.DAY_OF_MONTH) != dayOfMonth) {
+            mFirstDate.set(Calendar.YEAR, year);
+            mFirstDate.set(Calendar.MONTH, monthOfYear);
+            mFirstDate.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+            mTransactionList.clear();
+            mTransactionList.addAll(MoneyTransaction.findTransactionByDate(mFirstDate, mIsExpenseActivity));
+            recyclerAdapter.notifyDataSetChanged();
+            setDateFieldValue();
+        }
     }
 
     @Override
@@ -194,6 +232,7 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            addTestData();
             return true;
         }
 
@@ -205,13 +244,17 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
+        Intent in;
         if (id == R.id.nav_expenses) {
-            // Handle the camera action
+            in = new Intent(this, MainActivity.class);
+            in.putExtra(IS_EXPENSE_LIST, true);
+            startActivity(in);
         } else if (id == R.id.nav_incomes) {
-
+            in = new Intent(this, MainActivity.class);
+            in.putExtra(IS_EXPENSE_LIST, false);
+            startActivity(in);
         } else if (id == R.id.nav_categories) {
-            Intent in = new Intent(this, CategoryActivity.class);
+            in = new Intent(this, CategoryActivity.class);
             startActivity(in);
         }
 

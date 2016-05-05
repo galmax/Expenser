@@ -33,7 +33,7 @@ public class AddTransactionActivity extends AppCompatActivity {
     String whatDo;
     SimpleDateFormat sdf;
     //get object wallet
-    Wallet wallet = Wallet.findById(Wallet.class, 1);
+    Wallet wallet = Wallet.getCurrentWallet();
     private boolean isEmpty = false;
 
     @Override

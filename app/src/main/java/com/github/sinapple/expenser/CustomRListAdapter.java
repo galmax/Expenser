@@ -1,6 +1,7 @@
 package com.github.sinapple.expenser;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
@@ -13,7 +14,6 @@ import com.github.sinapple.expenser.model.MoneyTransaction;
 import com.github.sinapple.expenser.model.Wallet;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -22,6 +22,11 @@ import java.util.Locale;
  */
 public class CustomRListAdapter extends RecyclerView.Adapter<CustomRListAdapter.ViewHolder> implements RecyclerViewItemCallback.ItemTouchHelperAdapter, RecycleItemClickListener.OnItemClickListener{
     private List<MoneyTransaction> mTransactions;
+    private float mCurrentBalance;
+
+    public float getCurrentBalance() {
+        return mCurrentBalance;
+    }
 
     //Provide a reference to the views for each data item
     public class ViewHolder extends RecyclerView.ViewHolder{
@@ -47,6 +52,7 @@ public class CustomRListAdapter extends RecyclerView.Adapter<CustomRListAdapter.
     //Suitable constructor
     public CustomRListAdapter(List<MoneyTransaction> transactions) {
         mTransactions = transactions;
+        mCurrentBalance = Wallet.getCurrentWallet().getBalance();
     }
 
     //Create new views
@@ -65,14 +71,8 @@ public class CustomRListAdapter extends RecyclerView.Adapter<CustomRListAdapter.
         holder.mDescription.setText(item.getDescription());
         holder.mAmount.setText(String.format("%.2f %s", item.getAmount(), item.getWallet().getCurrency().toString()));
         String dateString;
-        DateFormat dateFormat = new SimpleDateFormat("d MMM yyyy", Locale.getDefault());
-        if (dateFormat.format(item.getDate()) == dateFormat.format(new Date())){
-            dateFormat = new SimpleDateFormat("d MMM", Locale.getDefault());
-            dateString = dateFormat.format(item.getDate());
-        } else {
-            dateFormat = new SimpleDateFormat("HH':'mm", Locale.getDefault());
-            dateString = dateFormat.format(item.getDate());
-        }
+        DateFormat dateFormat = new SimpleDateFormat("HH':'mm", Locale.getDefault());
+        dateString = dateFormat.format(item.getDate());
         holder.mDate.setText(dateString);
     }
 
@@ -86,45 +86,46 @@ public class CustomRListAdapter extends RecyclerView.Adapter<CustomRListAdapter.
     @Override
     public void onItemDismiss(View messageOutput, int position){
         final int p = position;
-        final MoneyTransaction x = mTransactions.remove(position);
-        final Wallet w = Wallet.findById(Wallet.class, 1);
-        //balance before
-        final float balanceBefore=w.getBalance();
-        //balance after
-        final float balanceAfter;
-        if (x.isExpense()) balanceAfter=balanceBefore+x.getAmount(); else balanceAfter=balanceBefore-x.getAmount();
-        w.setBalance(balanceAfter);
-        w.save();
-        notifyDataSetChanged();
+        final MoneyTransaction m = mTransactions.remove(position);
+        final Wallet w =  Wallet.findById(Wallet.class, m.getWallet().getId());
+        mCurrentBalance = w.getBalance() - m.getRawAmount();
+        notifyItemRemoved(position);
+
         Snackbar.make(messageOutput, R.string.message_transaction_deleted, Snackbar.LENGTH_SHORT)
                 .setAction(R.string.cancel, new View.OnClickListener() {
                     //Return transaction in the list when user have canceled removing and restore the amount of money in the wallet
                     @Override
                     public void onClick(View v) {
-                        w.setBalance(balanceBefore);
-                        w.save();
-                        mTransactions.add(p, x);
+                        mTransactions.add(p, m);
+                        mCurrentBalance += m.getRawAmount();
                         notifyItemInserted(p);
-                    }
-                })
+                    }})
                 .setCallback(new Snackbar.Callback() {
                     //Final removing the transaction and changing of money amount
                     @Override
                     public void onDismissed(Snackbar snackbar, int event) {
                         if (event != Snackbar.Callback.DISMISS_EVENT_ACTION) {
-                            x.delete();
+                            w.setBalance(mCurrentBalance);
+                            w.save();
+                            m.delete();
                         }
-                        super.onDismissed(snackbar, event);
                     }
                 }).show();
     }
 
+    //Called when the click has been performed, in this case, method will open edit activity
     @Override
     public void onItemClick(View view, int position) {
-        Intent editIntent = new Intent(view.getContext(), AddTransactionActivity.class);
-        editIntent.putExtra("whatDo", "editExpense");
-        editIntent.putExtra("Id", mTransactions.get(position).getId());
+        MoneyTransaction m = mTransactions.get(position);
+        Context context = view.getContext();
+        Intent editIntent = new Intent(context, AddTransactionActivity.class);
+        editIntent.putExtra("whatDo", m.isExpense()?"editExpense":"editIncome");
+        editIntent.putExtra("Id", m.getId());
         editIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        view.getContext().startActivity(editIntent);
+        context.startActivity(editIntent);
     }
+
+
+
+
 }
