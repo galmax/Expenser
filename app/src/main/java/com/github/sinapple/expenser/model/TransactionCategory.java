@@ -48,4 +48,16 @@ public class TransactionCategory extends SugarRecord {
     public String toString() {
         return mName;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj) return true;
+        if(obj == null) return false;
+        if(!(obj.getClass() == this.getClass())) return false;
+        else {
+            TransactionCategory category = (TransactionCategory) obj;
+            if(category.getId() == this.getId()) return true;
+        }
+        return false;
+    }
 }

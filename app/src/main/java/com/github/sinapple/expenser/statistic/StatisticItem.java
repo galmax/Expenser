@@ -10,14 +10,15 @@ public class StatisticItem {
     private float amount;
     private Integer color;
 
+    // Constructor
     public StatisticItem(){}
-
+    //Suitable constructor
     public StatisticItem(TransactionCategory category, float amount, Integer color) {
         this.category = category;
         this.amount = amount;
         this.color = color;
     }
-
+    // Getters and Setters
     public TransactionCategory getCategory() {
         return category;
     }
