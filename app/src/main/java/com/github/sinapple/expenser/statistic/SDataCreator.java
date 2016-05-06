@@ -23,6 +23,19 @@ public class SDataCreator {
         colors = new ColorsListCreator();
     }
 
+
+    private List<TransactionCategory> selectCategories(boolean isExpenseStatistic){
+
+        List<TransactionCategory> selectedCategories = new ArrayList<>();
+
+        for (TransactionCategory category : allCategories) {
+            if (category.isExpenseCategory() == isExpenseStatistic) {
+                selectedCategories.add(category);
+            }
+        }
+        return selectedCategories;
+    }
+
     public List<StatisticItem> getStatisticList(boolean isExpense){
         statisticList.clear();
         List<TransactionCategory> categories = selectCategories(isExpense);
@@ -142,20 +155,6 @@ public class SDataCreator {
         }
 
         return statisticList;
-    }
-
-
-
-    private List<TransactionCategory> selectCategories(boolean isExpenseStatistic){
-
-        List<TransactionCategory> selectedCategories = new ArrayList<>();
-
-        for (TransactionCategory category : allCategories) {
-            if (category.isExpenseCategory() == isExpenseStatistic) {
-                selectedCategories.add(category);
-            }
-        }
-        return selectedCategories;
     }
 
 }
