@@ -72,12 +72,10 @@ public class StatisticActivity extends AppCompatActivity {
                 if (isExpenseStatistic) {
                     isExpenseStatistic = false;
                     optionButton.setImageResource(R.drawable.ic_menu_incomes);
-                    Snackbar.make(v, R.string.statisticCategoryOption1, Snackbar.LENGTH_SHORT).show();
                     showStatistic();
                 } else {
                     isExpenseStatistic = true;
                     optionButton.setImageResource(R.drawable.ic_menu_expenses);
-                    Snackbar.make(v, R.string.statisticCategoryOption2, Snackbar.LENGTH_SHORT).show();
                     showStatistic();
                 }
             }
