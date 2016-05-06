@@ -31,6 +31,7 @@
     <string name="isDefaultDate">The date is already default</string>
     <string name="default_date_button_text">date</string>
     <string name="incorrect_date_selected">Incorrect date selected</string>
+    <string name="no_statistic_data_text">There is no data in this interval</string>
     <string-array name="category_type">
         <item>Income</item>
         <item>Expense</item>

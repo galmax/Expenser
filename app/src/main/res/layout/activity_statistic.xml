@@ -71,14 +71,25 @@
         android:layout_weight="0.5">
     </com.github.mikephil.charting.charts.PieChart>
 
+    <TextView
+        android:id="@+id/no_data_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/no_statistic_data_text"
+        android:textColor="@color/colorAccent"
+        android:visibility="invisible"/>
+
     <LinearLayout
+        android:id="@+id/category_list_linearLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="vertical"
         android:background="@color/statistic_activity_backColor"
         android:layout_margin="@dimen/statistic_activity_elements_margin"
         android:padding="@dimen/statistic_list_padding"
-        android:layout_weight="0.5">
+        android:layout_weight="0.6">
 
         <ListView
             android:id="@+id/statistic_category_listView"
