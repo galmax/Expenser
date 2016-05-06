@@ -46,6 +46,32 @@ public class SDataCreator {
         return statisticList;
     }
 
+    public List<StatisticItem> getStatisticList(boolean isExpense, Date fromDate, Date toDate){
+        statisticList.clear();
+        List<TransactionCategory> categories = selectCategories(isExpense);
+
+        for (int i = 0; i < categories.size(); i++) {
+            StatisticItem item = new StatisticItem();
+            item.setCategory(categories.get(i));
+            item.setColor(colors.getColors().get(i));
+
+            float amount = 0;
+            for (MoneyTransaction transaction : allMoneyTransaction) {
+                if(transaction.getCategory().equals(categories.get(i))
+                        && transaction.getDate().compareTo(fromDate) >= 0
+                        && transaction.getDate().compareTo(toDate) <= 0)
+                {
+                    amount += transaction.getAmount();
+                }
+            }
+
+            item.setAmount(amount);
+            statisticList.add(item);
+        }
+
+        return statisticList;
+    }
+
     public List<StatisticItem> getStatisticList(boolean isExpense, Date fromDate){
         statisticList.clear();
         List<TransactionCategory> categories = selectCategories(isExpense);
@@ -68,8 +94,55 @@ public class SDataCreator {
         return statisticList;
     }
 
+    public List<StatisticItem> getStatisticListFromSomeDate(boolean isExpense, Date fromDate) {
+        statisticList.clear();
+        List<TransactionCategory> categories = selectCategories(isExpense);
 
+        for (int i = 0; i < categories.size(); i++) {
+            StatisticItem item = new StatisticItem();
+            item.setCategory(categories.get(i));
+            item.setColor(colors.getColors().get(i));
 
+            float amount = 0;
+            for (MoneyTransaction transaction : allMoneyTransaction) {
+                if(transaction.getCategory().equals(categories.get(i))
+                        && transaction.getDate().compareTo(fromDate) >= 0)
+                {
+                    amount += transaction.getAmount();
+                }
+            }
+
+            item.setAmount(amount);
+            statisticList.add(item);
+        }
+
+        return statisticList;
+    }
+
+    public List<StatisticItem> getStatisticListToSomeDate(boolean isExpense, Date toDate) {
+        statisticList.clear();
+        List<TransactionCategory> categories = selectCategories(isExpense);
+
+        for (int i = 0; i < categories.size(); i++) {
+            StatisticItem item = new StatisticItem();
+            item.setCategory(categories.get(i));
+            item.setColor(colors.getColors().get(i));
+
+            float amount = 0;
+            for (MoneyTransaction transaction : allMoneyTransaction) {
+                if(transaction.getCategory().equals(categories.get(i))
+                        && transaction.getDate().compareTo(toDate) <= 0)
+                {
+                    amount += transaction.getAmount();
+                }
+            }
+
+            item.setAmount(amount);
+            statisticList.add(item);
+        }
+
+        return statisticList;
+    }
 
 
 
@@ -84,4 +157,5 @@ public class SDataCreator {
         }
         return selectedCategories;
     }
+
 }
