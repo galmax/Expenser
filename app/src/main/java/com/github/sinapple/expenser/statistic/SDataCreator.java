@@ -42,8 +42,6 @@ public class SDataCreator {
 
         for (int i = 0; i < categories.size(); i++) {
             StatisticItem item = new StatisticItem();
-            item.setCategory(categories.get(i));
-            item.setColor(colors.getColors().get(i));
 
             float amount = 0;
             for (MoneyTransaction transaction : allMoneyTransaction) {
@@ -51,8 +49,11 @@ public class SDataCreator {
                     amount += transaction.getAmount();
                 }
             }
+            if (amount == 0) continue;
 
             item.setAmount(amount);
+            item.setCategory(categories.get(i));
+            item.setColor(colors.getColors().get(i));
             statisticList.add(item);
         }
 
@@ -65,8 +66,6 @@ public class SDataCreator {
 
         for (int i = 0; i < categories.size(); i++) {
             StatisticItem item = new StatisticItem();
-            item.setCategory(categories.get(i));
-            item.setColor(colors.getColors().get(i));
 
             float amount = 0;
             for (MoneyTransaction transaction : allMoneyTransaction) {
@@ -77,8 +76,11 @@ public class SDataCreator {
                     amount += transaction.getAmount();
                 }
             }
+            if(amount == 0) continue;
 
             item.setAmount(amount);
+            item.setCategory(categories.get(i));
+            item.setColor(colors.getColors().get(i));
             statisticList.add(item);
         }
 
@@ -90,8 +92,6 @@ public class SDataCreator {
         List<TransactionCategory> categories = selectCategories(isExpense);
         for (int i = 0; i < categories.size(); i++) {
             StatisticItem item = new StatisticItem();
-            item.setCategory(categories.get(i));
-            item.setColor(colors.getColors().get(i));
 
             float amount = 0;
             for (MoneyTransaction transaction : allMoneyTransaction) {
@@ -99,8 +99,11 @@ public class SDataCreator {
                     amount += transaction.getAmount();
                 }
             }
-            item.setAmount(amount);
+            if(amount == 0) continue;
 
+            item.setAmount(amount);
+            item.setCategory(categories.get(i));
+            item.setColor(colors.getColors().get(i));
             statisticList.add(item);
         }
 
@@ -113,8 +116,6 @@ public class SDataCreator {
 
         for (int i = 0; i < categories.size(); i++) {
             StatisticItem item = new StatisticItem();
-            item.setCategory(categories.get(i));
-            item.setColor(colors.getColors().get(i));
 
             float amount = 0;
             for (MoneyTransaction transaction : allMoneyTransaction) {
@@ -125,7 +126,11 @@ public class SDataCreator {
                 }
             }
 
+            if(amount == 0) continue;
+
             item.setAmount(amount);
+            item.setCategory(categories.get(i));
+            item.setColor(colors.getColors().get(i));
             statisticList.add(item);
         }
 
@@ -138,8 +143,6 @@ public class SDataCreator {
 
         for (int i = 0; i < categories.size(); i++) {
             StatisticItem item = new StatisticItem();
-            item.setCategory(categories.get(i));
-            item.setColor(colors.getColors().get(i));
 
             float amount = 0;
             for (MoneyTransaction transaction : allMoneyTransaction) {
@@ -149,8 +152,11 @@ public class SDataCreator {
                     amount += transaction.getAmount();
                 }
             }
+            if(amount == 0) continue;
 
             item.setAmount(amount);
+            item.setCategory(categories.get(i));
+            item.setColor(colors.getColors().get(i));
             statisticList.add(item);
         }
 
