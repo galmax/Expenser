@@ -10,6 +10,8 @@ import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
+
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.sinapple.expenser.MainActivity;
 import com.github.sinapple.expenser.R;
@@ -32,26 +34,28 @@ public class StatisticActivity extends AppCompatActivity {
     private Date fromDate;
     private Date toDate;
 
-    private LinearLayout statisticLinearLayout;
+    private LinearLayout categoryListLLayout;
     private PieChart pieChart;
     private ListView categoriesListView;
     private ImageButton cancelButton;
     private ImageButton optionButton;
     private Button fromDateButton;
     private Button toDateButton;
+    private TextView noDataTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_statistic);
 
-        statisticLinearLayout = (LinearLayout) findViewById(R.id.statistic_linearLayout);
+        categoryListLLayout = (LinearLayout) findViewById(R.id.category_list_linearLayout);
         pieChart = (PieChart) findViewById(R.id.statistic_pieChart);
         categoriesListView = (ListView) findViewById(R.id.statistic_category_listView);
         cancelButton = (ImageButton) findViewById(R.id.statistic_panel_cancel_button);
         optionButton = (ImageButton) findViewById(R.id.statistic_panel_option_button);
         fromDateButton = (Button) findViewById(R.id.statistic_panel_fromDateButton);
         toDateButton = (Button) findViewById(R.id.statistic_panel_toDateButton);
+        noDataTextView = (TextView) findViewById(R.id.no_data_textView);
 
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -150,12 +154,9 @@ public class StatisticActivity extends AppCompatActivity {
             }
         });
 
-
         // initialize start date
         initStartActivityData();
         showStatistic();
-
-
     }
 
     private void initStartActivityData() {
@@ -184,6 +185,8 @@ public class StatisticActivity extends AppCompatActivity {
             statistic_list = dataCreator.getStatisticListToSomeDate(isExpenseStatistic, toDate);
         }
 
+        displayDataOrNot();
+
         pieChartManager =
                 new PieChartManager(
                         pieChart,
@@ -194,6 +197,19 @@ public class StatisticActivity extends AppCompatActivity {
         adapter.notifyDataSetChanged();
     }
 
+    private void displayDataOrNot() {
+        if (statistic_list.isEmpty()) {
+            pieChart.setVisibility(View.INVISIBLE);
+            categoryListLLayout.setVisibility(View.INVISIBLE);
 
+            noDataTextView.setVisibility(View.VISIBLE);
+        }
+        else {
+            pieChart.setVisibility(View.VISIBLE);
+            categoryListLLayout.setVisibility(View.VISIBLE);
+
+            noDataTextView.setVisibility(View.INVISIBLE);
+        }
+    }
 }
 
