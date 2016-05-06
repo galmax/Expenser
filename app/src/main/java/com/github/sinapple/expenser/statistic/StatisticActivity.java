@@ -185,8 +185,6 @@ public class StatisticActivity extends AppCompatActivity {
             statistic_list = dataCreator.getStatisticListToSomeDate(isExpenseStatistic, toDate);
         }
 
-        displayDataOrNot();
-
         pieChartManager =
                 new PieChartManager(
                         pieChart,
@@ -195,20 +193,21 @@ public class StatisticActivity extends AppCompatActivity {
 
         pieChartManager.initPieChart();
         adapter.notifyDataSetChanged();
+
+        displayDataOrNot();
     }
 
     private void displayDataOrNot() {
         if (statistic_list.isEmpty()) {
-            pieChart.setVisibility(View.INVISIBLE);
             categoryListLLayout.setVisibility(View.INVISIBLE);
+            pieChart.setVisibility(View.INVISIBLE);
 
             noDataTextView.setVisibility(View.VISIBLE);
         }
         else {
-            pieChart.setVisibility(View.VISIBLE);
-            categoryListLLayout.setVisibility(View.VISIBLE);
-
             noDataTextView.setVisibility(View.INVISIBLE);
+            categoryListLLayout.setVisibility(View.VISIBLE);
+            pieChart.setVisibility(View.VISIBLE);
         }
     }
 }
