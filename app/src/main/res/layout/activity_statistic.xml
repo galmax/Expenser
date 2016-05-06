@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/statistic_linearLayout"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -36,7 +37,7 @@
             android:layout_width="wrap_content"
             android:layout_height="35dp"
             android:textSize="5pt"
-            android:text="date"/>
+            android:text="@string/default_date_button_text"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -46,7 +47,7 @@
             android:layout_width="wrap_content"
             android:layout_height="35dp"
             android:textSize="5pt"
-            android:text="date"/>
+            android:text="@string/default_date_button_text"/>
         <View
             android:layout_width="1dp"
             android:layout_height="match_parent"
@@ -74,7 +75,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="vertical"
-        android:background="@color/statistic_list_backColor"
+        android:background="@color/statistic_activity_backColor"
         android:layout_margin="@dimen/statistic_activity_elements_margin"
         android:padding="@dimen/statistic_list_padding"
         android:layout_weight="0.5">

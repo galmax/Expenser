@@ -1,40 +1,38 @@
 package com.github.sinapple.expenser.statistic;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
-
 import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.PieData;
-import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.formatter.PercentFormatter;
-import com.github.mikephil.charting.utils.ColorTemplate;
+import com.github.sinapple.expenser.MainActivity;
 import com.github.sinapple.expenser.R;
-import com.github.sinapple.expenser.model.MoneyTransaction;
-import com.github.sinapple.expenser.model.TransactionCategory;
 
-import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Jarvis on 02.05.2016.
  */
 public class StatisticActivity extends AppCompatActivity {
-    private List<StatisticItem> statisticList;
-    private List<Integer> colors;
-    private boolean isExpenseStatistic;
-    List<TransactionCategory> allCategories;
-    List<MoneyTransaction> allMoneyTransaction;
 
+    private List<StatisticItem> statistic_list;
+    private PieChartManager pieChartManager;
+    private boolean isExpenseStatistic;
+    private SDataCreator dataCreator;
+    private StatisticAdapter adapter;
     private Date fromDate;
     private Date toDate;
-    private StatisticAdapter adapter;
-    //
+
+    private LinearLayout statisticLinearLayout;
     private PieChart pieChart;
     private ListView categoriesListView;
     private ImageButton cancelButton;
@@ -47,14 +45,7 @@ public class StatisticActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_statistic);
 
-        // initialize fields
-        fromDate = null;
-        toDate = null;
-        isExpenseStatistic = true;
-        allCategories = TransactionCategory.listAll(TransactionCategory.class);
-        allMoneyTransaction = MoneyTransaction.listAll(MoneyTransaction.class);
-        statisticList = new ArrayList<>();
-
+        statisticLinearLayout = (LinearLayout) findViewById(R.id.statistic_linearLayout);
         pieChart = (PieChart) findViewById(R.id.statistic_pieChart);
         categoriesListView = (ListView) findViewById(R.id.statistic_category_listView);
         cancelButton = (ImageButton) findViewById(R.id.statistic_panel_cancel_button);
@@ -65,192 +56,146 @@ public class StatisticActivity extends AppCompatActivity {
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fromDate = null;
-                toDate = null;
-                refreshViews();
+                if(fromDate != null || toDate != null) {
+                    fromDate = null;
+                    fromDateButton.setText(R.string.default_date_button_text);
+                    toDate = null;
+                    toDateButton.setText(R.string.default_date_button_text);
+                    showStatistic();
+                }
+                else Snackbar.make(v, R.string.isDefaultDate, Snackbar.LENGTH_SHORT).show();
             }
         });
         optionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isExpenseStatistic){
+                if (isExpenseStatistic) {
                     isExpenseStatistic = false;
                     optionButton.setImageResource(R.drawable.ic_menu_incomes);
-                    refreshViews();
-
+                    Snackbar.make(v, R.string.statisticCategoryOption1, Snackbar.LENGTH_SHORT).show();
+                    showStatistic();
                 } else {
                     isExpenseStatistic = true;
                     optionButton.setImageResource(R.drawable.ic_menu_expenses);
-                    refreshViews();
+                    Snackbar.make(v, R.string.statisticCategoryOption2, Snackbar.LENGTH_SHORT).show();
+                    showStatistic();
                 }
             }
         });
-        
+        fromDateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final View mView = v;
+                final Calendar calendar = Calendar.getInstance(Locale.getDefault());
+                calendar.set(Calendar.HOUR, 0);
+                calendar.set(Calendar.MINUTE, 0);
+                calendar.set(Calendar.SECOND, 0);
+
+                DatePickerDialog.OnDateSetListener listener = new DatePickerDialog.OnDateSetListener(){
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                        calendar.set(Calendar.YEAR, year);
+                        calendar.set(Calendar.MONTH, monthOfYear);
+                        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+                        if(toDate == null || toDate.getTime() >= calendar.getTimeInMillis()){
+                            fromDate = new Date();
+                            fromDate.setTime(calendar.getTimeInMillis());
+                            fromDateButton.setText(dayOfMonth + "." + monthOfYear + "." + year);
+
+                            showStatistic();
+                        }
+                        else Snackbar.make(mView, R.string.incorrect_date_selected, Snackbar.LENGTH_SHORT).show();
+                    }
+                };
+                new DatePickerDialog(
+                        v.getContext(),
+                        listener,
+                        calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH),
+                        calendar.get(Calendar.DAY_OF_MONTH)).show();
+            }
+        });
+        toDateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final View mView = v;
+                final Calendar calendar = Calendar.getInstance(Locale.getDefault());
+                calendar.set(Calendar.HOUR, 23);
+                calendar.set(Calendar.MINUTE, 59);
+                calendar.set(Calendar.SECOND, 59);
+
+                DatePickerDialog.OnDateSetListener listener = new DatePickerDialog.OnDateSetListener(){
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                        calendar.set(Calendar.YEAR, year);
+                        calendar.set(Calendar.MONTH, monthOfYear);
+                        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+                        if(fromDate == null || fromDate.getTime() <= calendar.getTimeInMillis()) {
+
+                            toDate = new Date();
+                            toDate.setTime(calendar.getTimeInMillis());
+                            toDateButton.setText(dayOfMonth + "." + monthOfYear + "." + year);
+
+                            showStatistic();
+                        }
+                        else Snackbar.make(mView, R.string.incorrect_date_selected, Snackbar.LENGTH_SHORT).show();
+                    }
+                };
+                new DatePickerDialog(
+                        v.getContext(),
+                        listener,
+                        calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH),
+                        calendar.get(Calendar.DAY_OF_MONTH)).show();
+            }
+        });
 
 
-        initColorsList();
-        initStatisticList();
-        initPieChart();
+        // initialize start date
+        initStartActivityData();
+        showStatistic();
 
-        adapter = new StatisticAdapter(this, R.layout.statistic_item, statisticList);
+
+    }
+
+    private void initStartActivityData() {
+        dataCreator = new SDataCreator();
+        isExpenseStatistic = true;
+        fromDate = null;
+        toDate = null;
+
+        statistic_list = dataCreator.getStatisticList(isExpenseStatistic);
+        adapter = new StatisticAdapter(this, R.layout.statistic_item, statistic_list);
         categoriesListView.setAdapter(adapter);
 
     }
 
-    private void refreshViews() {
+    private void showStatistic() {
+        if(fromDate == null && toDate == null){
+            statistic_list = dataCreator.getStatisticList(isExpenseStatistic);
+        }
+        else if(fromDate != null && toDate != null){
+            statistic_list = dataCreator.getStatisticList(isExpenseStatistic, fromDate, toDate);
+        }
+        else if(fromDate != null){
+            statistic_list = dataCreator.getStatisticListFromSomeDate(isExpenseStatistic, fromDate);
+        }
+        else if (toDate != null){
+            statistic_list = dataCreator.getStatisticListToSomeDate(isExpenseStatistic, toDate);
+        }
 
-        initStatisticList();
+        pieChartManager =
+                new PieChartManager(
+                        pieChart,
+                        statistic_list,
+                        isExpenseStatistic ? "Expense\nStatistic" : "Income\nStatistic");
+
+        pieChartManager.initPieChart();
         adapter.notifyDataSetChanged();
-        initPieChart();
-    }
-
-    private void initPieChart() {
-        List<String> xVals = new ArrayList<>();
-        List<Entry> yVals = new ArrayList<>();
-
-        float sum = 0;
-        for (StatisticItem statisticItem : statisticList) {
-            sum += statisticItem.getAmount();
-        }
-
-        for(int i = 0; i < statisticList.size(); i++){
-            float percent;
-            if(sum == 0) {
-                percent = 0;
-            } else{
-                percent = (float)statisticList.get(i).getAmount()*100/sum;
-            }
-            Entry entry = new Entry(percent, i);
-            yVals.add(entry);
-        }
-
-        for(int i = 0; i < statisticList.size(); i++){
-            xVals.add(statisticList.get(i).getCategory().getName());
-        }
-
-        PieDataSet pieDataSet = new PieDataSet(yVals, "");
-        pieDataSet.setSliceSpace(5f);
-        pieDataSet.setSelectionShift(5f);
-        pieDataSet.setColors(colors);
-        PieData pieData = new PieData(xVals, pieDataSet);
-        pieData.setValueFormatter(new PercentFormatter());
-
-        pieChart.setDescription("");    // Hide the description
-        pieChart.getLegend().setEnabled(false);
-        pieChart.animateY(2000);
-        pieChart.setData(pieData);
-        pieChart.invalidate();
     }
 
 
-
-    private void initStatisticList() {
-        statisticList.clear();
-        List<TransactionCategory> categories = new ArrayList<>();
-        for (TransactionCategory category : allCategories) {
-            if (category.isExpenseCategory() == isExpenseStatistic) {
-                categories.add(category);
-            }
-        }
-
-        if (fromDate != null && toDate != null) {
-            for (int i = 0; i < categories.size(); i++) {
-                StatisticItem item = new StatisticItem();
-                item.setCategory(categories.get(i));
-                item.setColor(colors.get(i));
-                item.setAmount(getAmountForCategoryAndDate(categories.get(i)));
-                statisticList.add(item);
-            }
-        } else if (fromDate != null) {
-            for (int i = 0; i < categories.size(); i++) {
-                StatisticItem item = new StatisticItem();
-                item.setCategory(categories.get(i));
-                item.setColor(colors.get(i));
-                item.setAmount(getAmountForCategoryFromDate(categories.get(i)));
-                statisticList.add(item);
-            }
-
-        } else if (toDate != null) {
-            for (int i = 0; i < categories.size(); i++) {
-                StatisticItem item = new StatisticItem();
-                item.setCategory(categories.get(i));
-                item.setColor(colors.get(i));
-                item.setAmount(getAmountForCategoryToDate(categories.get(i)));
-                statisticList.add(item);
-            }
-        } else {
-            for (int i = 0; i < categories.size(); i++) {
-                StatisticItem item = new StatisticItem();
-                item.setCategory(categories.get(i));
-                item.setColor(colors.get(i));
-                item.setAmount(getAmountForCategory(categories.get(i)));
-                statisticList.add(item);
-            }
-        }
-    }
-
-    private float getAmountForCategoryToDate(TransactionCategory transactionCategory) {
-        float result = 0;
-        for (MoneyTransaction transaction : allMoneyTransaction) {
-            if(transaction.getCategory().equals(transactionCategory)
-                    && transaction.getDate().compareTo(toDate) <= 0){
-
-                result+= transaction.getAmount();
-            }
-        }
-        return result;
-    }
-
-    private float getAmountForCategoryFromDate(TransactionCategory transactionCategory) {
-        float result = 0;
-        for (MoneyTransaction transaction : allMoneyTransaction) {
-            if(transaction.getCategory().equals(transactionCategory)
-                    && transaction.getDate().compareTo(fromDate) >= 0){
-
-                result+= transaction.getAmount();
-            }
-        }
-        return result;
-    }
-
-    private float getAmountForCategoryAndDate(TransactionCategory transactionCategory) {
-        float result = 0;
-        for (MoneyTransaction transaction : allMoneyTransaction) {
-            if(transaction.getCategory().equals(transactionCategory)
-                    && transaction.getDate().compareTo(fromDate) >= 0
-                    && transaction.getDate().compareTo(toDate) <= 0){
-
-                result+= transaction.getAmount();
-            }
-        }
-        return result;
-
-    }
-
-    private float getAmountForCategory(TransactionCategory transactionCategory) {
-        float result = 0;
-        for (MoneyTransaction transaction : allMoneyTransaction) {
-            if(transaction.getCategory().equals(transactionCategory)){
-                result+= transaction.getAmount();
-            }
-        }
-        return result;
-    }
-
-
-    private void initColorsList() {
-        colors = new ArrayList<>();
-        for (int c : ColorTemplate.COLORFUL_COLORS)
-            colors.add(c);
-        for (int c : ColorTemplate.LIBERTY_COLORS)
-            colors.add(c);
-        for (int c : ColorTemplate.PASTEL_COLORS)
-            colors.add(c);
-        for (int c : ColorTemplate.VORDIPLOM_COLORS)
-            colors.add(c);
-        for (int c : ColorTemplate.JOYFUL_COLORS)
-            colors.add(c);
-        colors.add(ColorTemplate.getHoloBlue());
-    }
 }
 

@@ -28,6 +28,11 @@
     <string name="set_date_picker">Set</string>
     <string name="nav_statistic">Statistic</string>
     <string name="set_title_for_date_picker">Choose date</string>
+    <string name="statisticCategoryOption1">Income categories</string>
+    <string name="statisticCategoryOption2">Expense categories</string>
+    <string name="isDefaultDate">The date is already default</string>
+    <string name="default_date_button_text">date</string>
+    <string name="incorrect_date_selected">Incorrect date selected</string>
     <string-array name="category_type">
         <item>Income</item>
         <item>Expense</item>
