@@ -20,7 +20,15 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-public class AddTransactionActivity extends AppCompatActivity {
+public class NewTransactionActivity extends AppCompatActivity {
+    public static final String ACTION = "com.github.sinapple.expenser.ACTION";
+    public static final String TRANSACTION_ID = "com.github.sinapple.expenser.TRANSACTION_ID";
+
+    public static final int ADD_EXPENSE = 1;
+    public static final int EDIT_EXPENSE = 2;
+    public static final int ADD_INCOME = 3;
+    public static final int EDIT_INCOME = 4;
+
 
     EditText et_nameTransaction, et_amountTransaction, et_descriptionTransaction;
     TextView tv_dateTransaction;
@@ -30,11 +38,13 @@ public class AddTransactionActivity extends AppCompatActivity {
     List<TransactionCategory> transactionCategories;
     TransactionCategory transactionCategory;
     MoneyTransaction moneyTransactionForEdit;
-    String whatDo;
+    int whatDo;
     SimpleDateFormat sdf;
     //get object wallet
     Wallet wallet = Wallet.getCurrentWallet();
     private boolean isEmpty = false;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,15 +70,15 @@ public class AddTransactionActivity extends AppCompatActivity {
         //get intent
         Intent intentTransaction = getIntent();
         //get key of MainActivity.class
-        whatDo = intentTransaction.getStringExtra("whatDo");
+        whatDo = intentTransaction.getIntExtra(ACTION, ADD_EXPENSE);
         //get format date
         sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
         //get object that will change
-        moneyTransactionForEdit = MoneyTransaction.findById(MoneyTransaction.class, intentTransaction.getLongExtra("Id", 1));
+        moneyTransactionForEdit = MoneyTransaction.findById(MoneyTransaction.class, intentTransaction.getLongExtra(TRANSACTION_ID, 1));
 
         switch (whatDo) {
             //if add Expense
-            case "addExpense":
+            case ADD_EXPENSE:
                 setTitle(getString(R.string.add_expense));
                 //get expense`s categories
                 transactionCategories = TransactionCategory.find(TransactionCategory.class, "m_expense_category=?", "1");
@@ -76,7 +86,7 @@ public class AddTransactionActivity extends AppCompatActivity {
                 showSpinner(transactionCategories);
                 break;
             //if edit Expense
-            case "editExpense":
+            case EDIT_EXPENSE:
                 setTitle(getString(R.string.edit_expense));
                 //get expense`s categories
                 transactionCategories = TransactionCategory.find(TransactionCategory.class, "m_expense_category=?", "1");
@@ -85,7 +95,7 @@ public class AddTransactionActivity extends AppCompatActivity {
                 dataFillingDb();
                 break;
             //if add Income
-            case "addIncome":
+            case ADD_INCOME:
                 setTitle(getString(R.string.add_income));
                 //get income`s categories
                 transactionCategories = TransactionCategory.find(TransactionCategory.class, "m_expense_category=?", "0");
@@ -93,7 +103,7 @@ public class AddTransactionActivity extends AppCompatActivity {
                 showSpinner(transactionCategories);
                 break;
             //if edit Income
-            case "editIncome":
+            case EDIT_INCOME:
                 setTitle(getString(R.string.edit_income));
                 //get income`s categories
                 transactionCategories = TransactionCategory.find(TransactionCategory.class, "m_expense_category=?", "0");
@@ -119,18 +129,26 @@ public class AddTransactionActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
+        if (id == android.R.id.home){
+            setResult(RESULT_CANCELED);
+            finish();
+            return true;
+        }
         if (id == R.id.add_transaction) {
             isEmpty();
             //checking empty fields
             if (!isEmpty) {
-                if (whatDo.equals("addExpense") || whatDo.equals("addIncome")) {
-                    saveTransaction();
-                } else if (whatDo.equals("editExpense") || whatDo.equals("editIncome")) {
+                //Sending information about new transaction to parent activity
+                if (whatDo == ADD_EXPENSE || whatDo == ADD_INCOME) {
+                    Intent answerIntent = new Intent();
+                    answerIntent.putExtra(TRANSACTION_ID, saveTransaction());
+                    setResult(RESULT_OK, answerIntent);
+                    finish();
+                } else if (whatDo == EDIT_EXPENSE || whatDo == EDIT_INCOME) {
                     editTransaction();
+                    setResult(RESULT_OK);
+                    finish();
                 }
-                //return to MainActivity
-                Intent intentToMain = new Intent(AddTransactionActivity.this, MainActivity.class);
-                startActivity(intentToMain);
             }
             return true;
         } else if (id == R.id.clean_transaction) {
@@ -183,8 +201,8 @@ public class AddTransactionActivity extends AppCompatActivity {
         spinner_CategoryTransaction.setAdapter(categoryAdapter);
     }
 
-    //save transaction
-    private void saveTransaction() {
+    //Saves transaction and returns its ID
+    private long saveTransaction() {
 
         try {
             date = sdf.parse(tv_dateTransaction.getText().toString());
@@ -199,6 +217,7 @@ public class AddTransactionActivity extends AppCompatActivity {
         //save
         wallet.save();
         moneyTransaction.save();
+        return moneyTransaction.getId();
     }
 
     //get index for edit transaction

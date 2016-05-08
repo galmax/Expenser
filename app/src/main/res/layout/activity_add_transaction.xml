@@ -7,7 +7,7 @@
     android:measureWithLargestChild="false"
     android:orientation="vertical"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.github.sinapple.expenser.AddTransactionActivity">
+    tools:context=".NewTransactionActivity">
 
 
     <!--Transaction name-->

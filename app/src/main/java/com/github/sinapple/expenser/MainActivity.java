@@ -19,7 +19,6 @@ import android.text.format.DateUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import com.github.sinapple.expenser.model.Currency;
 import android.widget.DatePicker;
 import android.widget.TextView;
 
@@ -33,14 +32,19 @@ import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, DatePickerDialog.OnDateSetListener
+        implements NavigationView.OnNavigationItemSelectedListener, DatePickerDialog.OnDateSetListener, RecycleItemClickListener.OnItemClickListener
 {
     public static final String IS_EXPENSE_LIST = "com.github.sinapple.expenser.IS_EXPENSE_LIST";
+    public static final int ADD_TRANSACTION = 0;
+    public static final int EDIT_TRANSACTION = 1;
 
     private List<MoneyTransaction> mTransactionList;
+    private int mPassedTransactionIndex;
     private CustomRListAdapter recyclerAdapter;
     private Wallet mWallet;
     private Calendar mFirstDate;
+
+    //Used when the user sets date interval
     private Calendar mSecondDate;
     private boolean mIsExpenseActivity;
 
@@ -61,14 +65,13 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 //intent to AddTransactionsActivity
-                Intent intentToTransaction = new Intent(MainActivity.this, AddTransactionActivity.class);
+                Intent intentToTransaction = new Intent(MainActivity.this, NewTransactionActivity.class);
                 //get Expense categories
-                List<TransactionCategory> transactionCategories = TransactionCategory.find(TransactionCategory.class, "m_expense_category=?", "1");
-                if (transactionCategories.size() != 0) {
-                    //send key to AddTransactionActivity.class
-                    intentToTransaction.putExtra("whatDo", mIsExpenseActivity?"addExpense":"addIncome");
-                    intentToTransaction.putExtra("Id", 1);
-                    startActivity(intentToTransaction);
+                long transactionCategoriesCount = TransactionCategory.count(TransactionCategory.class, "m_expense_category=?", new String[]{"1"});
+                if (transactionCategoriesCount != 0) {
+                    //send key to NewTransactionActivity.class
+                    intentToTransaction.putExtra(NewTransactionActivity.ACTION, mIsExpenseActivity ? NewTransactionActivity.ADD_EXPENSE : NewTransactionActivity.ADD_INCOME);
+                    startActivityForResult(intentToTransaction, ADD_TRANSACTION);
                 } else {
                     Snackbar.make(view, R.string.null_expense, Snackbar.LENGTH_SHORT).show();
                 }
@@ -115,11 +118,11 @@ public class MainActivity extends AppCompatActivity
         list.setAdapter(recyclerAdapter);
 
         //Set click listener
-        RecycleItemClickListener clickListener = new RecycleItemClickListener(this.getApplicationContext(), recyclerAdapter);
+        RecycleItemClickListener clickListener = new RecycleItemClickListener(this.getApplicationContext(), this);
         list.addOnItemTouchListener(clickListener);
 
         //Set swipe listener
-        ItemTouchHelper.Callback callback = new RecyclerViewItemCallback(recyclerAdapter, ContextCompat.getColor(this, R.color.colorAccent));
+        ItemTouchHelper.Callback callback = new RecyclerViewItemCallback(recyclerAdapter, ContextCompat.getColor(this, R.color.colorPrimary));
         ItemTouchHelper helper = new ItemTouchHelper(callback);
         helper.attachToRecyclerView(list);
     }
@@ -180,12 +183,6 @@ public class MainActivity extends AppCompatActivity
         moneyTransaction5.save();
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        outState.putBoolean(IS_EXPENSE_LIST, mIsExpenseActivity);
-        super.onSaveInstanceState(outState);
-    }
-
     public void setDateFieldValue(){
         dateField.setText(DateUtils.formatDateTime(getApplicationContext(), mFirstDate.getTimeInMillis(), DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR));
     }
@@ -194,6 +191,48 @@ public class MainActivity extends AppCompatActivity
         new DatePickerDialog(this, this, mFirstDate.get(Calendar.YEAR), mFirstDate.get(Calendar.MONTH), mFirstDate.get(Calendar.DAY_OF_MONTH)).show();
     }
 
+    //Updates information has been changed or added in NewTransactionActivity
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            MoneyTransaction m;
+            if (requestCode == ADD_TRANSACTION){
+                if (!data.hasExtra(NewTransactionActivity.TRANSACTION_ID)) throw new IllegalStateException("ID of added transaction hasn't been passed");
+                //Attach added item to existing list
+                m = MoneyTransaction.findById(MoneyTransaction.class, data.getLongExtra(NewTransactionActivity.TRANSACTION_ID, 0));
+                if (mSecondDate == null ? m.isInDate(mFirstDate) : m.isInDateInterval(mFirstDate, mSecondDate)) {
+                    mTransactionList.add(m);
+                    recyclerAdapter.notifyItemInserted(mTransactionList.size() - 1);
+                }
+            } else if (requestCode == EDIT_TRANSACTION) {
+                if (mPassedTransactionIndex == -1 ) throw new IllegalStateException("Index of sent transaction in list hasn't been saved");
+                //Update edited item
+                m = MoneyTransaction.findById(MoneyTransaction.class, mTransactionList.get(mPassedTransactionIndex).getId());
+                if (mSecondDate == null ? m.isInDate(mFirstDate) : m.isInDateInterval(mFirstDate, mSecondDate)) {
+                    mTransactionList.set(mPassedTransactionIndex, m);
+                    recyclerAdapter.notifyItemChanged(mPassedTransactionIndex);
+                } else {
+                    //If date has been changed
+                    mTransactionList.remove(mPassedTransactionIndex);
+                    recyclerAdapter.notifyItemRemoved(mPassedTransactionIndex);
+                }
+                mPassedTransactionIndex = -1;
+            }
+        }
+    }
+
+    //Called when the click has been performed, in this case, method will open edit activity
+    @Override
+    public void onItemClick(View view, int position) {
+        Intent editIntent = new Intent(MainActivity.this, NewTransactionActivity.class);
+        editIntent.putExtra(NewTransactionActivity.ACTION, mIsExpenseActivity ? NewTransactionActivity.EDIT_EXPENSE : NewTransactionActivity.EDIT_INCOME);
+        editIntent.putExtra(NewTransactionActivity.TRANSACTION_ID, mTransactionList.get(position).getId());
+        mPassedTransactionIndex = position;
+        startActivityForResult(editIntent, EDIT_TRANSACTION);
+    }
+
+    //Called when user set date in specific window
     @Override
     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
         if (mFirstDate.get(Calendar.YEAR) != year || mFirstDate.get(Calendar.MONTH) != monthOfYear || mFirstDate.get(Calendar.DAY_OF_MONTH) != dayOfMonth) {
@@ -202,11 +241,16 @@ public class MainActivity extends AppCompatActivity
             mFirstDate.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
             mTransactionList.clear();
-            mTransactionList.addAll(MoneyTransaction.findTransactionByDate(mFirstDate, mIsExpenseActivity));
+            if (mSecondDate == null)
+                mTransactionList.addAll(MoneyTransaction.findTransactionByDate(mFirstDate, mIsExpenseActivity));
+            else
+                mTransactionList.addAll(MoneyTransaction.findTransactionByDate(mFirstDate, mSecondDate, mIsExpenseActivity));
+
             recyclerAdapter.notifyDataSetChanged();
             setDateFieldValue();
         }
     }
+
 
     @Override
     public void onBackPressed() {

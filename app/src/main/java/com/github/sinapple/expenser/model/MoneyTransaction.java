@@ -113,6 +113,26 @@ public class MoneyTransaction extends SugarRecord {
         return mAmount < 0;
     }
 
+    //Checks whether transaction has been created in specified date
+    public boolean isInDate(Calendar date){
+        Calendar calendarInstance = Calendar.getInstance();
+        calendarInstance.setTimeInMillis(mDate.getTime());
+
+        return calendarInstance.get(Calendar.DAY_OF_MONTH) == date.get(Calendar.DAY_OF_MONTH) && calendarInstance.get(Calendar.YEAR) == date.get(Calendar.YEAR);
+    }
+
+    //Checks whether transaction has been created in specified date interval
+    public boolean isInDateInterval(Calendar begin, Calendar end){
+        Calendar calendarInstance = Calendar.getInstance();
+        boolean result;
+
+        calendarInstance.setTimeInMillis(mDate.getTime());
+        result = calendarInstance.get(Calendar.DAY_OF_MONTH) >= begin.get(Calendar.DAY_OF_MONTH) && calendarInstance.get(Calendar.DAY_OF_MONTH) <= end.get(Calendar.DAY_OF_MONTH);
+        result = result && calendarInstance.get(Calendar.YEAR) >= begin.get(Calendar.YEAR) && calendarInstance.get(Calendar.YEAR) <= end.get(Calendar.YEAR);
+
+        return result;
+    }
+
     @Override
     public String toString() {
         return "mName: " + mName + " " + "mCategory: " + mCategory.getName() + " " + "mWallet: " + mWallet.getBalance() + " " + "mDescription: " + mDescription + " " + "mAmount: " + mAmount + " " + " mDate: " + mDate + "\n";

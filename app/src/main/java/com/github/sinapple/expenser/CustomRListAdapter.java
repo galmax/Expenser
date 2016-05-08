@@ -20,7 +20,7 @@ import java.util.Locale;
 /**
  * Adapter is used to generate views with transaction info for RecyclerView
  */
-public class CustomRListAdapter extends RecyclerView.Adapter<CustomRListAdapter.ViewHolder> implements RecyclerViewItemCallback.ItemTouchHelperAdapter, RecycleItemClickListener.OnItemClickListener{
+public class CustomRListAdapter extends RecyclerView.Adapter<CustomRListAdapter.ViewHolder> implements RecyclerViewItemCallback.ItemTouchHelperAdapter{
     private List<MoneyTransaction> mTransactions;
     private float mCurrentBalance;
     private Wallet mWallet;
@@ -115,14 +115,14 @@ public class CustomRListAdapter extends RecyclerView.Adapter<CustomRListAdapter.
     }
 
     //Called when the click has been performed, in this case, method will open edit activity
-    @Override
+/*    @Override
     public void onItemClick(View view, int position) {
         MoneyTransaction m = mTransactions.get(position);
         Context context = view.getContext();
-        Intent editIntent = new Intent(context, AddTransactionActivity.class);
+        Intent editIntent = new Intent(context, NewTransactionActivity.class);
         editIntent.putExtra("whatDo", m.isExpense()?"editExpense":"editIncome");
         editIntent.putExtra("Id", m.getId());
         editIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(editIntent);
-    }
+    }*/
 }
