@@ -23,6 +23,8 @@ import java.util.List;
 public class NewTransactionActivity extends AppCompatActivity {
     public static final String ACTION = "com.github.sinapple.expenser.ACTION";
     public static final String TRANSACTION_ID = "com.github.sinapple.expenser.TRANSACTION_ID";
+    public static final String TIME="com.github.sinapple.expenser.TIME";
+
 
     public static final int ADD_EXPENSE = 1;
     public static final int EDIT_EXPENSE = 2;
@@ -43,7 +45,6 @@ public class NewTransactionActivity extends AppCompatActivity {
     //get object wallet
     Wallet wallet = Wallet.getCurrentWallet();
     private boolean isEmpty = false;
-
 
 
     @Override
@@ -82,6 +83,7 @@ public class NewTransactionActivity extends AppCompatActivity {
                 setTitle(getString(R.string.add_expense));
                 //get expense`s categories
                 transactionCategories = TransactionCategory.find(TransactionCategory.class, "m_expense_category=?", "1");
+                tv_dateTransaction.setText(intentTransaction.getStringExtra(TIME));
                 isExpense = -1;
                 showSpinner(transactionCategories);
                 break;
@@ -99,6 +101,7 @@ public class NewTransactionActivity extends AppCompatActivity {
                 setTitle(getString(R.string.add_income));
                 //get income`s categories
                 transactionCategories = TransactionCategory.find(TransactionCategory.class, "m_expense_category=?", "0");
+                tv_dateTransaction.setText(intentTransaction.getStringExtra(TIME));
                 isExpense = 1;
                 showSpinner(transactionCategories);
                 break;
@@ -129,7 +132,7 @@ public class NewTransactionActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == android.R.id.home){
+        if (id == android.R.id.home) {
             setResult(RESULT_CANCELED);
             finish();
             return true;
@@ -242,7 +245,7 @@ public class NewTransactionActivity extends AppCompatActivity {
             et_amountTransaction.setError(getString(R.string.enter_amount));
             isEmpty = true;
         }
-       if (!et_amountTransaction.getText().toString().equals("")&& Float.parseFloat(et_amountTransaction.getText().toString()) == 0) {
+        if (!et_amountTransaction.getText().toString().equals("") && Float.parseFloat(et_amountTransaction.getText().toString()) == 0) {
             et_amountTransaction.setError(getString(R.string.if_zero_amount));
             isEmpty = true;
         }

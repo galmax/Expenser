@@ -25,6 +25,7 @@
     <string name="if_zero_amount">Amount shouldn`t be zero!</string>
     <string name="balance">Balance:</string>
     <string name="null_expense">First, add the category of expense</string>
+    <string name="null_income">First, add the category of income</string>
     <string name="set_date_picker">Set</string>
     <string name="nav_statistic">Statistic</string>
     <string name="set_title_for_date_picker">Choose date</string>

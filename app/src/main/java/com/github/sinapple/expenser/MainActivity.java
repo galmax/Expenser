@@ -28,6 +28,7 @@ import com.github.sinapple.expenser.model.Wallet;
 import com.github.sinapple.expenser.statistic.StatisticActivity;
 
 import java.util.ArrayList;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -69,14 +70,16 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
                 //intent to AddTransactionsActivity
                 Intent intentToTransaction = new Intent(MainActivity.this, NewTransactionActivity.class);
-                //get Expense categories
-                long transactionCategoriesCount = TransactionCategory.count(TransactionCategory.class, "m_expense_category=?", new String[]{"1"});
+                //get Transaction categories
+                long transactionCategoriesCount = TransactionCategory.count(TransactionCategory.class, "m_expense_category=?", new String[]{mIsExpenseActivity?"1":"0"});
                 if (transactionCategoriesCount != 0) {
                     //send key to NewTransactionActivity.class
                     intentToTransaction.putExtra(NewTransactionActivity.ACTION, mIsExpenseActivity ? NewTransactionActivity.ADD_EXPENSE : NewTransactionActivity.ADD_INCOME);
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+                    intentToTransaction.putExtra(NewTransactionActivity.TIME,sdf.format(mFirstDate.getTime()));
                     startActivityForResult(intentToTransaction, ADD_TRANSACTION);
                 } else {
-                    Snackbar.make(view, R.string.null_expense, Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(view, mIsExpenseActivity?R.string.null_expense:R.string.null_income, Snackbar.LENGTH_SHORT).show();
                 }
             }
         });
