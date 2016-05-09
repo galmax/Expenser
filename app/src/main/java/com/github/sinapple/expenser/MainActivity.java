@@ -27,12 +27,13 @@ import com.github.sinapple.expenser.model.TransactionCategory;
 import com.github.sinapple.expenser.model.Wallet;
 import com.github.sinapple.expenser.statistic.StatisticActivity;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, DatePickerDialog.OnDateSetListener, RecycleItemClickListener.OnItemClickListener
+        implements NavigationView.OnNavigationItemSelectedListener, DatePickerDialog.OnDateSetListener, RecycleItemClickListener.OnItemClickListener, RecyclerViewItemCallback.ItemTouchHelperAdapter
 {
     public static final String IS_EXPENSE_LIST = "com.github.sinapple.expenser.IS_EXPENSE_LIST";
     public static final int ADD_TRANSACTION = 0;
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity
 
     private List<MoneyTransaction> mTransactionList;
     private int mPassedTransactionIndex;
+    private float mCurrentBalance;
     private CustomRListAdapter recyclerAdapter;
     private Wallet mWallet;
     private Calendar mFirstDate;
@@ -48,8 +50,9 @@ public class MainActivity extends AppCompatActivity
     private Calendar mSecondDate;
     private boolean mIsExpenseActivity;
 
-    private FloatingActionButton fab;
-    private TextView tv_balance;
+    private FloatingActionButton mFab;
+    private TextView mTvBalance;
+    private TextView mNothingToShowView;
     private TextView dateField;
 
     @Override
@@ -60,8 +63,8 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        mFab = (FloatingActionButton) findViewById(R.id.fab);
+        mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //intent to AddTransactionsActivity
@@ -82,7 +85,7 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
             @Override
             public void onDrawerOpened(View drawerView) {
-                tv_balance.setText(Float.toString(recyclerAdapter.getCurrentBalance()));
+                mTvBalance.setText(Float.toString(mCurrentBalance));
             }
         });
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -99,10 +102,11 @@ public class MainActivity extends AppCompatActivity
         //initializeDB();
         //Write balance in nav_header_main
         View header = navigationView.getHeaderView(0);
-        tv_balance = (TextView) header.findViewById(R.id.tv_balance);
+        mTvBalance = (TextView) header.findViewById(R.id.tv_balance);
         TextView tv_sign = (TextView) header.findViewById(R.id.tv_sign);
         mWallet = Wallet.getCurrentWallet();
-        tv_balance.setText(Float.toString(mWallet.getBalance()));
+        mCurrentBalance = mWallet.getBalance();
+        mTvBalance.setText(Float.toString(mWallet.getBalance()));
         tv_sign.setText(mWallet.getCurrency().getSign());
 
         //Initialize date
@@ -111,10 +115,10 @@ public class MainActivity extends AppCompatActivity
         setDateFieldValue();
 
         //Initialize RecyclerList
-        mTransactionList = MoneyTransaction.findTransactionByDate(mFirstDate, mIsExpenseActivity);
+        addAllToList(MoneyTransaction.findTransactionByDate(mFirstDate, mIsExpenseActivity));
         RecyclerView list = (RecyclerView) findViewById(R.id.transaction_list);
         list.setLayoutManager(new LinearLayoutManager(this));
-        recyclerAdapter = new CustomRListAdapter(mTransactionList, Wallet.getCurrentWallet());
+        recyclerAdapter = new CustomRListAdapter(mTransactionList);
         list.setAdapter(recyclerAdapter);
 
         //Set click listener
@@ -122,7 +126,7 @@ public class MainActivity extends AppCompatActivity
         list.addOnItemTouchListener(clickListener);
 
         //Set swipe listener
-        ItemTouchHelper.Callback callback = new RecyclerViewItemCallback(recyclerAdapter, ContextCompat.getColor(this, R.color.colorPrimary));
+        ItemTouchHelper.Callback callback = new RecyclerViewItemCallback(this, ContextCompat.getColor(this, R.color.colorPrimary));
         ItemTouchHelper helper = new ItemTouchHelper(callback);
         helper.attachToRecyclerView(list);
     }
@@ -183,6 +187,47 @@ public class MainActivity extends AppCompatActivity
         moneyTransaction5.save();
     }
 
+    //Display message if the transaction list is empty
+    private void notifyIfEmptyList(){
+        if (mNothingToShowView == null)
+            mNothingToShowView = (TextView)findViewById(R.id.nothing_to_show);
+
+        if (mTransactionList.size() == 0 || mTransactionList == null) {
+            mNothingToShowView.setVisibility(View.VISIBLE);
+        } else {
+            mNothingToShowView.setVisibility(View.GONE);
+        }
+    }
+
+    //Convenient methods to manage transaction list and reflect its changes on related views
+    private void addItemToList(MoneyTransaction transaction){
+        addItemToList(mTransactionList.size(), transaction);
+    }
+
+    private void addItemToList(int index, MoneyTransaction transaction){
+        mTransactionList.add(index, transaction);
+        recyclerAdapter.notifyItemInserted(index);
+        notifyIfEmptyList();
+    }
+
+    private void addAllToList(List<MoneyTransaction> list){
+        if (list == null) {
+            notifyIfEmptyList();
+            return;
+        }
+        if (mTransactionList == null) mTransactionList = new ArrayList<>();
+        mTransactionList.addAll(list);
+        if (recyclerAdapter != null) recyclerAdapter.notifyDataSetChanged();
+        notifyIfEmptyList();
+    }
+
+    private MoneyTransaction removeItem(int index){
+        MoneyTransaction res = mTransactionList.remove(index);
+        recyclerAdapter.notifyItemRemoved(index);
+        notifyIfEmptyList();
+        return res;
+    }
+
     public void setDateFieldValue(){
         dateField.setText(DateUtils.formatDateTime(getApplicationContext(), mFirstDate.getTimeInMillis(), DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR));
     }
@@ -202,8 +247,7 @@ public class MainActivity extends AppCompatActivity
                 //Attach added item to existing list
                 m = MoneyTransaction.findById(MoneyTransaction.class, data.getLongExtra(NewTransactionActivity.TRANSACTION_ID, 0));
                 if (mSecondDate == null ? m.isInDate(mFirstDate) : m.isInDateInterval(mFirstDate, mSecondDate)) {
-                    mTransactionList.add(m);
-                    recyclerAdapter.notifyItemInserted(mTransactionList.size() - 1);
+                    addItemToList(m);
                 }
             } else if (requestCode == EDIT_TRANSACTION) {
                 if (mPassedTransactionIndex == -1 ) throw new IllegalStateException("Index of sent transaction in list hasn't been saved");
@@ -214,12 +258,37 @@ public class MainActivity extends AppCompatActivity
                     recyclerAdapter.notifyItemChanged(mPassedTransactionIndex);
                 } else {
                     //If date has been changed
-                    mTransactionList.remove(mPassedTransactionIndex);
-                    recyclerAdapter.notifyItemRemoved(mPassedTransactionIndex);
+                    removeItem(mPassedTransactionIndex);
                 }
                 mPassedTransactionIndex = -1;
             }
         }
+    }
+
+    //Remove some item. Usually called when the swipe gesture has been performed.
+    @Override
+    public void onItemDismiss(View messageOutput, final int position){
+        final MoneyTransaction m = removeItem(position);
+        mCurrentBalance -= m.getRawAmount();
+        Snackbar.make(messageOutput, R.string.message_transaction_deleted, Snackbar.LENGTH_SHORT)
+                .setAction(R.string.cancel, new View.OnClickListener() {
+                    //Return transaction in the list when user have canceled removing and restore the amount of money in the wallet
+                    @Override
+                    public void onClick(View v) {
+                        addItemToList(position, m);
+                        mCurrentBalance += m.getRawAmount();
+                    }})
+                .setCallback(new Snackbar.Callback() {
+                    //Final removing the transaction and changing of money amount
+                    @Override
+                    public void onDismissed(Snackbar snackbar, int event) {
+                        if (event != Snackbar.Callback.DISMISS_EVENT_ACTION) {
+                            mWallet.setBalance(mCurrentBalance);
+                            mWallet.save();
+                            m.delete();
+                        }
+                    }
+                }).show();
     }
 
     //Called when the click has been performed, in this case, method will open edit activity
@@ -242,15 +311,13 @@ public class MainActivity extends AppCompatActivity
 
             mTransactionList.clear();
             if (mSecondDate == null)
-                mTransactionList.addAll(MoneyTransaction.findTransactionByDate(mFirstDate, mIsExpenseActivity));
+                addAllToList(MoneyTransaction.findTransactionByDate(mFirstDate, mIsExpenseActivity));
             else
-                mTransactionList.addAll(MoneyTransaction.findTransactionByDate(mFirstDate, mSecondDate, mIsExpenseActivity));
+                addAllToList(MoneyTransaction.findTransactionByDate(mFirstDate, mSecondDate, mIsExpenseActivity));
 
-            recyclerAdapter.notifyDataSetChanged();
             setDateFieldValue();
         }
     }
-
 
     @Override
     public void onBackPressed() {

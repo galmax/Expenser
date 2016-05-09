@@ -20,14 +20,8 @@ import java.util.Locale;
 /**
  * Adapter is used to generate views with transaction info for RecyclerView
  */
-public class CustomRListAdapter extends RecyclerView.Adapter<CustomRListAdapter.ViewHolder> implements RecyclerViewItemCallback.ItemTouchHelperAdapter{
+public class CustomRListAdapter extends RecyclerView.Adapter<CustomRListAdapter.ViewHolder>{
     private List<MoneyTransaction> mTransactions;
-    private float mCurrentBalance;
-    private Wallet mWallet;
-
-    public float getCurrentBalance() {
-        return mCurrentBalance;
-    }
 
     //Provide a reference to the views for each data item
     public class ViewHolder extends RecyclerView.ViewHolder{
@@ -51,10 +45,8 @@ public class CustomRListAdapter extends RecyclerView.Adapter<CustomRListAdapter.
     }
 
     //Suitable constructor
-    public CustomRListAdapter(List<MoneyTransaction> transactions, Wallet wallet) {
+    public CustomRListAdapter(List<MoneyTransaction> transactions) {
         mTransactions = transactions;
-        mWallet = wallet;
-        mCurrentBalance = wallet.getBalance();
     }
 
     //Create new views
@@ -84,45 +76,4 @@ public class CustomRListAdapter extends RecyclerView.Adapter<CustomRListAdapter.
         return mTransactions.size();
     }
 
-    //Remove some item. Usually called when the swipe gesture has been performed.
-    @Override
-    public void onItemDismiss(View messageOutput, int position){
-        final int p = position;
-        final MoneyTransaction m = mTransactions.remove(position);
-        mCurrentBalance -= m.getRawAmount();
-        notifyItemRemoved(position);
-
-        Snackbar.make(messageOutput, R.string.message_transaction_deleted, Snackbar.LENGTH_SHORT)
-                .setAction(R.string.cancel, new View.OnClickListener() {
-                    //Return transaction in the list when user have canceled removing and restore the amount of money in the wallet
-                    @Override
-                    public void onClick(View v) {
-                        mTransactions.add(p, m);
-                        mCurrentBalance += m.getRawAmount();
-                        notifyItemInserted(p);
-                    }})
-                .setCallback(new Snackbar.Callback() {
-                    //Final removing the transaction and changing of money amount
-                    @Override
-                    public void onDismissed(Snackbar snackbar, int event) {
-                        if (event != Snackbar.Callback.DISMISS_EVENT_ACTION) {
-                            mWallet.setBalance(mCurrentBalance);
-                            mWallet.save();
-                            m.delete();
-                        }
-                    }
-                }).show();
-    }
-
-    //Called when the click has been performed, in this case, method will open edit activity
-/*    @Override
-    public void onItemClick(View view, int position) {
-        MoneyTransaction m = mTransactions.get(position);
-        Context context = view.getContext();
-        Intent editIntent = new Intent(context, NewTransactionActivity.class);
-        editIntent.putExtra("whatDo", m.isExpense()?"editExpense":"editIncome");
-        editIntent.putExtra("Id", m.getId());
-        editIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(editIntent);
-    }*/
 }
