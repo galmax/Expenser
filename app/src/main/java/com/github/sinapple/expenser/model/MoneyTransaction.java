@@ -154,7 +154,7 @@ public class MoneyTransaction extends SugarRecord {
 
     public static List<MoneyTransaction> findTransactionByTime(Calendar first, Calendar second, boolean lookForExpenses){
         if (first.getTimeInMillis() > second.getTimeInMillis()) return null;
-        return MoneyTransaction.find(MoneyTransaction.class, "m_amount" + (lookForExpenses ? "<" : ">") + "? and m_wallet = ? and m_date > ? and m_date < ?", "0", Long.toString(Wallet.getCurrentWallet().getId()), Long.toString(first.getTimeInMillis()), Long.toString(second.getTimeInMillis()));
+        return MoneyTransaction.find(MoneyTransaction.class, "m_amount" + (lookForExpenses ? "<" : ">") + "? and m_wallet = ? and m_date >= ? and m_date < ?", "0", Long.toString(Wallet.getCurrentWallet().getId()), Long.toString(first.getTimeInMillis()), Long.toString(second.getTimeInMillis()));
     }
 
     //Set time to zero for attaching all day to interval
