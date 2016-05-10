@@ -88,7 +88,7 @@ public class NewTransactionActivity extends AppCompatActivity implements DatePic
                 setTitle(getString(R.string.add_expense));
                 //get expense`s categories
                 transactionCategories = TransactionCategory.find(TransactionCategory.class, "m_expense_category=?", "1");
-                tv_dateTransaction.setText(intentTransaction.getStringExtra(TIME));
+                tv_dateTransaction.setText(sdf.format(intentTransaction.getExtras().get(TIME)));
                 isExpense = -1;
                 showSpinner(transactionCategories);
                 break;
@@ -106,7 +106,7 @@ public class NewTransactionActivity extends AppCompatActivity implements DatePic
                 setTitle(getString(R.string.add_income));
                 //get income`s categories
                 transactionCategories = TransactionCategory.find(TransactionCategory.class, "m_expense_category=?", "0");
-                tv_dateTransaction.setText(intentTransaction.getStringExtra(TIME));
+                tv_dateTransaction.setText(sdf.format(intentTransaction.getExtras().get(TIME)));
                 isExpense = 1;
                 showSpinner(transactionCategories);
                 break;

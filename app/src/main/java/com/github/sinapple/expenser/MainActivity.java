@@ -28,14 +28,12 @@ import com.github.sinapple.expenser.model.Wallet;
 import com.github.sinapple.expenser.statistic.StatisticActivity;
 
 import java.util.ArrayList;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, DatePickerDialog.OnDateSetListener, RecycleItemClickListener.OnItemClickListener, RecyclerViewItemCallback.ItemTouchHelperAdapter
-{
+        implements NavigationView.OnNavigationItemSelectedListener, DatePickerDialog.OnDateSetListener, RecycleItemClickListener.OnItemClickListener, RecyclerViewItemCallback.ItemTouchHelperAdapter {
     public static final String IS_EXPENSE_LIST = "com.github.sinapple.expenser.IS_EXPENSE_LIST";
     public static final int ADD_TRANSACTION = 0;
     public static final int EDIT_TRANSACTION = 1;
@@ -71,15 +69,14 @@ public class MainActivity extends AppCompatActivity
                 //intent to AddTransactionsActivity
                 Intent intentToTransaction = new Intent(MainActivity.this, NewTransactionActivity.class);
                 //get Transaction categories
-                long transactionCategoriesCount = TransactionCategory.count(TransactionCategory.class, "m_expense_category=?", new String[]{mIsExpenseActivity?"1":"0"});
+                long transactionCategoriesCount = TransactionCategory.count(TransactionCategory.class, "m_expense_category=?", new String[]{mIsExpenseActivity ? "1" : "0"});
                 if (transactionCategoriesCount != 0) {
                     //send key to NewTransactionActivity.class
                     intentToTransaction.putExtra(NewTransactionActivity.ACTION, mIsExpenseActivity ? NewTransactionActivity.ADD_EXPENSE : NewTransactionActivity.ADD_INCOME);
-                    SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
-                    intentToTransaction.putExtra(NewTransactionActivity.TIME,sdf.format(mFirstDate.getTime()));
+                    intentToTransaction.putExtra(NewTransactionActivity.TIME, mFirstDate.getTime());
                     startActivityForResult(intentToTransaction, ADD_TRANSACTION);
                 } else {
-                    Snackbar.make(view, mIsExpenseActivity?R.string.null_expense:R.string.null_income, Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(view, mIsExpenseActivity ? R.string.null_expense : R.string.null_income, Snackbar.LENGTH_SHORT).show();
                 }
             }
         });
@@ -114,7 +111,7 @@ public class MainActivity extends AppCompatActivity
 
         //Initialize date
         mFirstDate = Calendar.getInstance(Locale.getDefault());
-        dateField = (TextView)findViewById(R.id.date);
+        dateField = (TextView) findViewById(R.id.date);
         setDateFieldValue();
 
         //Initialize RecyclerList
@@ -191,9 +188,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     //Display message if the transaction list is empty
-    private void notifyIfEmptyList(){
+    private void notifyIfEmptyList() {
         if (mNothingToShowView == null)
-            mNothingToShowView = (TextView)findViewById(R.id.nothing_to_show);
+            mNothingToShowView = (TextView) findViewById(R.id.nothing_to_show);
 
         if (mTransactionList.size() == 0 || mTransactionList == null) {
             mNothingToShowView.setVisibility(View.VISIBLE);
@@ -203,17 +200,17 @@ public class MainActivity extends AppCompatActivity
     }
 
     //Convenient methods to manage transaction list and reflect its changes on related views
-    private void addItemToList(MoneyTransaction transaction){
+    private void addItemToList(MoneyTransaction transaction) {
         addItemToList(mTransactionList.size(), transaction);
     }
 
-    private void addItemToList(int index, MoneyTransaction transaction){
+    private void addItemToList(int index, MoneyTransaction transaction) {
         mTransactionList.add(index, transaction);
         recyclerAdapter.notifyItemInserted(index);
         notifyIfEmptyList();
     }
 
-    private void addAllToList(List<MoneyTransaction> list){
+    private void addAllToList(List<MoneyTransaction> list) {
         if (list == null) {
             notifyIfEmptyList();
             return;
@@ -224,14 +221,14 @@ public class MainActivity extends AppCompatActivity
         notifyIfEmptyList();
     }
 
-    private MoneyTransaction removeItem(int index){
+    private MoneyTransaction removeItem(int index) {
         MoneyTransaction res = mTransactionList.remove(index);
         recyclerAdapter.notifyItemRemoved(index);
         notifyIfEmptyList();
         return res;
     }
 
-    public void setDateFieldValue(){
+    public void setDateFieldValue() {
         dateField.setText(DateUtils.formatDateTime(getApplicationContext(), mFirstDate.getTimeInMillis(), DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR));
     }
 
@@ -245,15 +242,17 @@ public class MainActivity extends AppCompatActivity
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             MoneyTransaction m;
-            if (requestCode == ADD_TRANSACTION){
-                if (!data.hasExtra(NewTransactionActivity.TRANSACTION_ID)) throw new IllegalStateException("ID of added transaction hasn't been passed");
+            if (requestCode == ADD_TRANSACTION) {
+                if (!data.hasExtra(NewTransactionActivity.TRANSACTION_ID))
+                    throw new IllegalStateException("ID of added transaction hasn't been passed");
                 //Attach added item to existing list
                 m = MoneyTransaction.findById(MoneyTransaction.class, data.getLongExtra(NewTransactionActivity.TRANSACTION_ID, 0));
                 if (mSecondDate == null ? m.isInDate(mFirstDate) : m.isInDateInterval(mFirstDate, mSecondDate)) {
                     addItemToList(m);
                 }
             } else if (requestCode == EDIT_TRANSACTION) {
-                if (mPassedTransactionIndex == -1 ) throw new IllegalStateException("Index of sent transaction in list hasn't been saved");
+                if (mPassedTransactionIndex == -1)
+                    throw new IllegalStateException("Index of sent transaction in list hasn't been saved");
                 //Update edited item
                 m = MoneyTransaction.findById(MoneyTransaction.class, mTransactionList.get(mPassedTransactionIndex).getId());
                 if (mSecondDate == null ? m.isInDate(mFirstDate) : m.isInDateInterval(mFirstDate, mSecondDate)) {
@@ -270,7 +269,7 @@ public class MainActivity extends AppCompatActivity
 
     //Remove some item. Usually called when the swipe gesture has been performed.
     @Override
-    public void onItemDismiss(View messageOutput, final int position){
+    public void onItemDismiss(View messageOutput, final int position) {
         final MoneyTransaction m = removeItem(position);
         mCurrentBalance -= m.getRawAmount();
         Snackbar.make(messageOutput, R.string.message_transaction_deleted, Snackbar.LENGTH_SHORT)
@@ -280,7 +279,8 @@ public class MainActivity extends AppCompatActivity
                     public void onClick(View v) {
                         addItemToList(position, m);
                         mCurrentBalance += m.getRawAmount();
-                    }})
+                    }
+                })
                 .setCallback(new Snackbar.Callback() {
                     //Final removing the transaction and changing of money amount
                     @Override
@@ -372,7 +372,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_categories) {
             in = new Intent(this, CategoryActivity.class);
             startActivity(in);
-        } else if(id == R.id.nav_statistic){
+        } else if (id == R.id.nav_statistic) {
             startActivity(new Intent(this, StatisticActivity.class));
         }
 
