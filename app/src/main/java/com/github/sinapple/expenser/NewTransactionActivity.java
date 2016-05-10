@@ -1,5 +1,6 @@
 package com.github.sinapple.expenser;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -7,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -17,13 +19,15 @@ import com.github.sinapple.expenser.model.Wallet;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
-public class NewTransactionActivity extends AppCompatActivity {
+public class NewTransactionActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
     public static final String ACTION = "com.github.sinapple.expenser.ACTION";
     public static final String TRANSACTION_ID = "com.github.sinapple.expenser.TRANSACTION_ID";
-    public static final String TIME="com.github.sinapple.expenser.TIME";
+    public static final String TIME = "com.github.sinapple.expenser.TIME";
 
 
     public static final int ADD_EXPENSE = 1;
@@ -45,6 +49,7 @@ public class NewTransactionActivity extends AppCompatActivity {
     //get object wallet
     Wallet wallet = Wallet.getCurrentWallet();
     private boolean isEmpty = false;
+    Calendar mFirstDate;
 
 
     @Override
@@ -63,8 +68,8 @@ public class NewTransactionActivity extends AppCompatActivity {
         tv_dateTransaction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DatePicker datePicker = new DatePicker();
-                datePicker.show(getFragmentManager(), "date_picker");
+                mFirstDate = Calendar.getInstance(Locale.getDefault());
+                new DatePickerDialog(NewTransactionActivity.this, NewTransactionActivity.this, mFirstDate.get(Calendar.YEAR), mFirstDate.get(Calendar.MONTH), mFirstDate.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
 
@@ -253,5 +258,15 @@ public class NewTransactionActivity extends AppCompatActivity {
             String sDate = sdf.format(new Date());
             tv_dateTransaction.setText(sDate);
         }
+    }
+
+    //Called when user set date in specific window
+    @Override
+    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+        mFirstDate.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        mFirstDate.set(Calendar.MONTH, monthOfYear + 1);
+        mFirstDate.set(Calendar.YEAR, year);
+        //set date on textView
+        tv_dateTransaction.setText(sdf.format(mFirstDate.getTime()));
     }
 }
