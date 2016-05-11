@@ -155,35 +155,31 @@ public class MainActivity extends AppCompatActivity
 
         //Create income categories
         List<TransactionCategory> categoriesList= new ArrayList<TransactionCategory>();
-        categoriesList.add(new TransactionCategory("Paycheck","Roma",false));
-        categoriesList.add(new TransactionCategory("Predictable bonus","Roma",false));
-        categoriesList.add(new TransactionCategory("Expense reimbursements","Roma",false));
-        categoriesList.add(new TransactionCategory("Investment","Roma",false));
-        categoriesList.add(new TransactionCategory("Other","Roma",false));
+        categoriesList.add(new TransactionCategory("Paycheck","Incomes on a monthly basis",false));
+        categoriesList.add(new TransactionCategory("Work bonus","Incentive payments",false));
+        categoriesList.add(new TransactionCategory("Expense reimbursements","Compensations for expenses",false));
+        categoriesList.add(new TransactionCategory("Investment","Incomes from a range of investments",false));
+        categoriesList.add(new TransactionCategory("Other","Unsorted incomes",false));
 
         //Create expense categories
-        categoriesList.add(new TransactionCategory("Automobile","Roma",true));
-        categoriesList.add(new TransactionCategory("Bank Charges","Roma",true));
-        categoriesList.add(new TransactionCategory("Charity","Roma",true));
-        categoriesList.add(new TransactionCategory("Childcare","Roma",true));
-        categoriesList.add(new TransactionCategory("Clothing","Roma",true));
-        categoriesList.add(new TransactionCategory("Credit Card Fees","Roma",true));
-        categoriesList.add(new TransactionCategory("Education","Roma",true));
-        categoriesList.add(new TransactionCategory("Events","Roma",true));
-        categoriesList.add(new TransactionCategory("Food","Roma",true));
-        categoriesList.add(new TransactionCategory("Gifts","Roma",true));
-        categoriesList.add(new TransactionCategory("Healthcare","Roma",true));
-        categoriesList.add(new TransactionCategory("Household","Roma",true));
-        categoriesList.add(new TransactionCategory("Insurance","Roma",true));
-        categoriesList.add(new TransactionCategory("Job expenses","Roma",true));
-        categoriesList.add(new TransactionCategory("Leisure","Roma",true));
-        categoriesList.add(new TransactionCategory("Hobbies","Roma",true));
-        categoriesList.add(new TransactionCategory("Loans","Roma",true));
-        categoriesList.add(new TransactionCategory("Pet Care","Roma",true));
-        categoriesList.add(new TransactionCategory("Savings","Roma",true));
-        categoriesList.add(new TransactionCategory("Taxes","Roma",true));
-        categoriesList.add(new TransactionCategory("Utilities","Roma",true));
-        categoriesList.add(new TransactionCategory("Vacation","Roma",true));
+        categoriesList.add(new TransactionCategory("Automobile","Expenses associated with vehicles",true));
+        categoriesList.add(new TransactionCategory("Bank Charges","All charges for bank services",true));
+        categoriesList.add(new TransactionCategory("Charity","Money given to those in need",true));
+        categoriesList.add(new TransactionCategory("Clothing","Expenses on clothing, laundry, repairing",true));
+        categoriesList.add(new TransactionCategory("Education","Money spent on education, trainings, courses",true));
+        categoriesList.add(new TransactionCategory("Events","Expenses on celebrations",true));
+        categoriesList.add(new TransactionCategory("Food","Expenses on food",true));
+        categoriesList.add(new TransactionCategory("Gifts","Money spent on gifts",true));
+        categoriesList.add(new TransactionCategory("Health care","Expenses on health insurance, treatment, diagnostic services",true));
+        categoriesList.add(new TransactionCategory("Insurance","Insurance expenses",true));
+        categoriesList.add(new TransactionCategory("Job expenses","Deductions and expenses related to job",true));
+        categoriesList.add(new TransactionCategory("Leisure","Money spent on entertainment and partying",true));
+        categoriesList.add(new TransactionCategory("Hobbies","Money spent on personal enjoyment",true));
+        categoriesList.add(new TransactionCategory("Loans","Expenses on principal and interest payments",true));
+        categoriesList.add(new TransactionCategory("Pet Care","Expenses on pet health care, toys, pet clothing",true));
+        categoriesList.add(new TransactionCategory("Taxes","Financial charges imposed on various profits",true));
+        categoriesList.add(new TransactionCategory("Utilities","Payments for electricity, water, gas, sewage",true));
+        categoriesList.add(new TransactionCategory("Vacation","Money spent on recreation and tourism",true));
 
         //Save all in database
         for (int i=0;i<categoriesList.size();i++){
