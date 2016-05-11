@@ -1,7 +1,10 @@
 package com.github.sinapple.expenser;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -35,12 +38,15 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, DatePickerDialog.OnDateSetListener, RecycleItemClickListener.OnItemClickListener, RecyclerViewItemCallback.ItemTouchHelperAdapter
 {
     public static final String IS_EXPENSE_LIST = "com.github.sinapple.expenser.IS_EXPENSE_LIST";
+    public static final String SETTINGS = "com.github.sinapple.expenser.SETTINGS";
+    public static final String IS_FIRST_RUN = "com.github.sinapple.expenser.IS_FIRST_RUN";
     public static final int TRANSACTION_ADDED = 0;
     public static final int TRANSACTION_EDITED = 1;
 
     public static final int INCOME_LIST  = 2;
     public static final int EXPENSE_LIST = 3;
 
+    //Model instances
     private List<MoneyTransaction> mTransactionList;
     private int mPassedTransactionIndex;
     private float mCurrentBalance;
@@ -53,10 +59,13 @@ public class MainActivity extends AppCompatActivity
     private Calendar mSecondDate;
     private boolean mIsExpenseActivity;
 
+    //Views
     private FloatingActionButton mFab;
     private TextView mTvBalance;
     private TextView mNothingToShowView;
     private TextView mDateField;
+
+    private SharedPreferences mSettings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,8 +115,9 @@ public class MainActivity extends AppCompatActivity
         mIsExpenseActivity = getIntent().getBooleanExtra(IS_EXPENSE_LIST, true);
         changeActivityAppearance(mIsExpenseActivity? EXPENSE_LIST: INCOME_LIST);
 
+        mSettings = getSharedPreferences(SETTINGS, Context.MODE_PRIVATE);
 
-        //initializeDB();
+        //initializeDatabase();
         //Write balance in nav_header_main
         View header = navigationView.getHeaderView(0);
         mTvBalance = (TextView) header.findViewById(R.id.tv_balance);
@@ -139,18 +149,19 @@ public class MainActivity extends AppCompatActivity
         helper.attachToRecyclerView(list);
     }
 
-    private static void initializeDB() {
+    private static void initializeDatabase() {
 
-        Wallet mainWallet = Wallet.getCurrentWallet();
+        Wallet.getCurrentWallet();
 
-        //Create TransactionCategory(Income)
+        //Create income categories
         List<TransactionCategory> categoriesList= new ArrayList<TransactionCategory>();
         categoriesList.add(new TransactionCategory("Paycheck","Roma",false));
         categoriesList.add(new TransactionCategory("Predictable bonus","Roma",false));
         categoriesList.add(new TransactionCategory("Expense reimbursements","Roma",false));
         categoriesList.add(new TransactionCategory("Investment","Roma",false));
         categoriesList.add(new TransactionCategory("Other","Roma",false));
-        //Create TransactionCategory(Expense)
+
+        //Create expense categories
         categoriesList.add(new TransactionCategory("Automobile","Roma",true));
         categoriesList.add(new TransactionCategory("Bank Charges","Roma",true));
         categoriesList.add(new TransactionCategory("Charity","Roma",true));
@@ -174,6 +185,7 @@ public class MainActivity extends AppCompatActivity
         categoriesList.add(new TransactionCategory("Utilities","Roma",true));
         categoriesList.add(new TransactionCategory("Vacation","Roma",true));
 
+        //Save all in database
         for (int i=0;i<categoriesList.size();i++){
             categoriesList.get(i).save();
         }
@@ -205,10 +217,10 @@ public class MainActivity extends AppCompatActivity
     private void changeActivityAppearance(int flag){
         if (flag == EXPENSE_LIST){
             setTitle(getApplicationContext().getString(R.string.nav_expenses));
-            mFab.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.basic_expense_color));
+            mFab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.basic_expense_color)));
         }else if (flag == INCOME_LIST){
             setTitle(getApplicationContext().getString(R.string.nav_incomes));
-            mFab.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.basic_income_color));
+            mFab.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.basic_income_color)));
         }
     }
 
@@ -261,6 +273,18 @@ public class MainActivity extends AppCompatActivity
 
     public void onDateBoxClick(View view) {
         new DatePickerDialog(this, this, mFirstDate.get(Calendar.YEAR), mFirstDate.get(Calendar.MONTH), mFirstDate.get(Calendar.DAY_OF_MONTH)).show();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //Check if application is on its first run
+        if (mSettings.getBoolean(IS_FIRST_RUN, true)){
+            initializeDatabase();
+            SharedPreferences.Editor editor = mSettings.edit();
+            editor.putBoolean(IS_FIRST_RUN, false);
+            editor.apply();
+        }
     }
 
     //Updates information has been changed or added in NewTransactionActivity
