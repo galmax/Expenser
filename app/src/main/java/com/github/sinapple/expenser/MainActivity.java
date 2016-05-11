@@ -143,33 +143,40 @@ public class MainActivity extends AppCompatActivity
 
         Wallet mainWallet = Wallet.getCurrentWallet();
 
-        //create TransactionCategory
-        TransactionCategory transactionCategoryFood = new TransactionCategory("Food", "This category about food", true);
-        transactionCategoryFood.save();
-        //create TransactionCategory
-        TransactionCategory transactionCategoryTransport = new TransactionCategory("Transport", "This category about transport", true);
-        transactionCategoryTransport.save();
-        //create TransactionCategory
-        TransactionCategory transactionCategorySalary = new TransactionCategory("Salary", "This category about salary", false);
-        transactionCategorySalary.save();
-        //create TransactionCategory
-        TransactionCategory transactionCategoryPremium = new TransactionCategory("Premium", "This category about premium", false);
-        transactionCategoryPremium.save();
-        //create TransactionCategory
-        TransactionCategory transactionCategoryGym = new TransactionCategory("Gym", "This category about premium", true);
-        transactionCategoryGym.save();
+        //Create TransactionCategory(Income)
+        List<TransactionCategory> categoriesList= new ArrayList<TransactionCategory>();
+        categoriesList.add(new TransactionCategory("Paycheck","Roma",false));
+        categoriesList.add(new TransactionCategory("Predictable bonus","Roma",false));
+        categoriesList.add(new TransactionCategory("Expense reimbursements","Roma",false));
+        categoriesList.add(new TransactionCategory("Investment","Roma",false));
+        categoriesList.add(new TransactionCategory("Other","Roma",false));
+        //Create TransactionCategory(Expense)
+        categoriesList.add(new TransactionCategory("Automobile","Roma",true));
+        categoriesList.add(new TransactionCategory("Bank Charges","Roma",true));
+        categoriesList.add(new TransactionCategory("Charity","Roma",true));
+        categoriesList.add(new TransactionCategory("Childcare","Roma",true));
+        categoriesList.add(new TransactionCategory("Clothing","Roma",true));
+        categoriesList.add(new TransactionCategory("Credit Card Fees","Roma",true));
+        categoriesList.add(new TransactionCategory("Education","Roma",true));
+        categoriesList.add(new TransactionCategory("Events","Roma",true));
+        categoriesList.add(new TransactionCategory("Food","Roma",true));
+        categoriesList.add(new TransactionCategory("Gifts","Roma",true));
+        categoriesList.add(new TransactionCategory("Healthcare","Roma",true));
+        categoriesList.add(new TransactionCategory("Household","Roma",true));
+        categoriesList.add(new TransactionCategory("Insurance","Roma",true));
+        categoriesList.add(new TransactionCategory("Job expenses","Roma",true));
+        categoriesList.add(new TransactionCategory("Leisure","Roma",true));
+        categoriesList.add(new TransactionCategory("Hobbies","Roma",true));
+        categoriesList.add(new TransactionCategory("Loans","Roma",true));
+        categoriesList.add(new TransactionCategory("Pet Care","Roma",true));
+        categoriesList.add(new TransactionCategory("Savings","Roma",true));
+        categoriesList.add(new TransactionCategory("Taxes","Roma",true));
+        categoriesList.add(new TransactionCategory("Utilities","Roma",true));
+        categoriesList.add(new TransactionCategory("Vacation","Roma",true));
 
-        //create Transactions
-        MoneyTransaction moneyTransaction1 = new MoneyTransaction("Bought bread", transactionCategoryFood, mainWallet, "I bought some bread", -5);
-        moneyTransaction1.save();
-        MoneyTransaction moneyTransaction2 = new MoneyTransaction("Bought subscription", transactionCategoryGym, mainWallet, "I bought subscription on month", -50);
-        moneyTransaction2.save();
-        MoneyTransaction moneyTransaction3 = new MoneyTransaction("My salary", transactionCategorySalary, mainWallet, "I get salary", 270);
-        moneyTransaction3.save();
-        MoneyTransaction moneyTransaction4 = new MoneyTransaction("Banana", transactionCategoryFood, mainWallet, "Bought two kilogram of bananas in market at my home", -60);
-        moneyTransaction4.save();
-        MoneyTransaction moneyTransaction5 = new MoneyTransaction("Sport nutrition", transactionCategoryGym, mainWallet, null, -150);
-        moneyTransaction5.save();
+        for (int i=0;i<categoriesList.size();i++){
+            categoriesList.get(i).save();
+        }
     }
 
     private static void addTestData() {
